@@ -14,6 +14,8 @@ Eine Lern-App für Kurmancî (Nordkurdisch) von **A1 bis C2**, mit Schwerpunkt a
 - **Karteikarten** mit verteilter Wiederholung, **Verbtrainer** für 10 Zeiten inklusive Ergativ
 - **12 Lesetexte** mit Antipp-Wörterbuch und Verständnisfragen
 - Wörterbuch, Grammatik zum Nachschlagen und eine Seite mit Lernmethoden
+- **Spielerisch lernen:** Stufen und Ränge (von *Nûhatî* bis *Hosta*), drei Tagesaufgaben mit Schatzkiste, die Münze **Zêr**, Serienschutz **Mertal**, Abzeichen und eine Tagesziel-Sonne mit 21 Strahlen
+- Gestaltet in den Farben der kurdischen Flagge: Rot, Weiß, Grün und die goldene Sonne
 
 ## Fortschritt
 
@@ -37,3 +39,8 @@ Der Lernstand wird im Browser auf dem jeweiligen Gerät gespeichert. Unter **Pro
 | `audio/m0.js` … | Aussprache-Aufnahmen, werden bei Bedarf nachgeladen |
 | `sw.js`, `manifest.webmanifest`, `icon*.png`, `icon.svg` | Offline-Nutzung und App-Symbol |
 | `.nojekyll` | sorgt dafür, dass GitHub Pages die Dateien unverändert ausliefert |
+| `source/` | Quelltext, Build- und Audio-Werkzeuge, Tests (siehe `CLAUDE.md`) |
+
+## Ausblick
+
+Die Web-App ist ein erster Entwurf. Geplant sind eine **deutsche und eine englische Version** (Oberfläche und Erklärungen jeweils komplett in einer der beiden Sprachen) sowie eine richtige **App für Android und iOS**. Details stehen in `CLAUDE.md`.

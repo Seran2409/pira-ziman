@@ -1,0 +1,9 @@
+# Build-Zwischenstände (werden aus source/ erzeugt)
+source/dist/
+source/audio_build/mms/
+source/audio_build/mms_test/
+source/audio_build/*.log
+source/audio_build/mms_log_*.txt
+source/tools/__pycache__/
+# Sprachmodell (145 MB, zu groß für Git): facebook/mms-tts-kmr-script_latin von Hugging Face nach source/voice/ laden
+source/voice/

@@ -1,0 +1,42 @@
+/* ===== Lesetexte A1–A2 ===== */
+PZ.texts.push(
+{ id: 't-a1-malbat', lv: 'A1', title: 'Ez û malbata xwe', de: 'Ich und meine Familie', intro: 'Berfîn stellt sich vor.',
+  body: ['Navê min Berfîn e. Ez bîst û du salî me. Ez ji Êlihê me, lê niha ez li Amedê dijîm. Ez xwendekar im.',
+    'Malbata min ne pir mezin e. Bavê min Kemal e, ew karker e. Diya min Gulistan e, ew li malê dixebite. Birayekî min û xwişkeke min hene. Birayê min Rêzan çardeh salî ye. Xwişka min Hêvî mamoste ye.',
+    'Em her Yekşem bi hev re taştê dixwin. Diya min nan, penîr û hêk tîne. Bavê min çay çêdike. Ez ji van rojan pir hez dikim.'],
+  tr: ['Ich heiße Berfîn. Ich bin zweiundzwanzig Jahre alt. Ich komme aus Êlih, aber jetzt lebe ich in Amed. Ich bin Studentin.',
+    'Meine Familie ist nicht sehr groß. Mein Vater ist Kemal, er ist Arbeiter. Meine Mutter ist Gulistan, sie arbeitet zu Hause. Ich habe einen Bruder und eine Schwester. Mein Bruder Rêzan ist vierzehn. Meine Schwester Hêvî ist Lehrerin.',
+    'Jeden Sonntag frühstücken wir zusammen. Meine Mutter bringt Brot, Käse und Eier. Mein Vater macht Tee. Ich liebe diese Tage sehr.'],
+  gloss: [['dijîm', 'ich lebe (jiyan)'], ['niha', 'jetzt'], ['dixebite', 'arbeitet'], ['birayekî', 'einen Bruder'], ['xwişkeke', 'eine Schwester'], ['çardeh', 'vierzehn'], ['taştê', 'Frühstück'], ['tîne', 'bringt (anîn)'], ['çêdike', 'macht, bereitet zu'], ['van', 'diese (Oblique Pl.)'], ['rojan', 'Tage (Oblique Pl.)']],
+  q: [['Woher kommt Berfîn?', 'Aus Êlih', ['Aus Amed', 'Aus Mêrdîn', 'Aus Wan']], ['Was ist Berfîns Schwester von Beruf?', 'Lehrerin', ['Studentin', 'Ärztin', 'Arbeiterin']], ['Wer macht sonntags den Tee?', 'Der Vater', ['Die Mutter', 'Berfîn', 'Rêzan']]] },
+
+{ id: 't-a1-bazar', lv: 'A1', title: 'Li bazara Amedê', de: 'Auf dem Markt von Amed', intro: 'Ein Samstag mit der Großmutter.',
+  body: ['Îro Şemî ye. Ez û dapîra xwe diçin bazarê. Bazar nêzîkî Mizgefta Mezin e. Li bazarê gelek tişt hene: fêkî, sebze, penîr, bîber û biharat.',
+    'Dapîra min sêv, tirî û zebeşek dikire. Zebeşên Amedê pir mezin û şîrîn in. Firoşkar dibêje: „Kîloyek deh lîre ye.“ Dapîra min dibêje: „Pir biha ye! Heşt lîre?“ Firoşkar dikene û dibêje: „Baş e, ji bo te heşt lîre.“',
+    'Paşê em diçin çayxaneyê û çayekê vedixwin. Ez westiyayî me, lê dilxweş im.'],
+  tr: ['Heute ist Samstag. Meine Großmutter und ich gehen auf den Markt. Der Markt ist in der Nähe der Großen Moschee. Auf dem Markt gibt es viele Dinge: Obst, Gemüse, Käse, Paprika und Gewürze.',
+    'Meine Großmutter kauft Äpfel, Trauben und eine Wassermelone. Die Wassermelonen aus Amed sind sehr groß und süß. Der Verkäufer sagt: „Zehn Lira das Kilo.“ Meine Großmutter sagt: „Viel zu teuer! Acht Lira?“ Der Verkäufer lacht und sagt: „Gut, für dich acht Lira.“',
+    'Danach gehen wir ins Teehaus und trinken einen Tee. Ich bin müde, aber glücklich.'],
+  gloss: [['Şemî', 'Samstag'], ['bîber', 'Paprika, Pfeffer'], ['biharat', 'Gewürze'], ['zebeşek', 'eine Wassermelone'], ['firoşkar', 'Verkäufer/in'], ['dikene', 'lacht'], ['çayekê', 'einen Tee (Oblique)'], ['mizgefta', 'Moschee (mit Ezafe)']],
+  q: [['Welcher Tag ist heute?', 'Samstag', ['Sonntag', 'Freitag', 'Montag']], ['Wie viel zahlt die Großmutter am Ende pro Kilo?', '8 Lira', ['10 Lira', '5 Lira', '12 Lira']], ['Wohin gehen die beiden danach?', 'Ins Teehaus', ['Nach Hause', 'In die Moschee', 'Zur Brücke']]] },
+
+{ id: 't-a2-heskif', lv: 'A2', title: 'Rojek li Heskîfê', de: 'Ein Tag in Heskîf', intro: 'Ein Ausflug mit Freunden, schön und traurig zugleich.',
+  body: ['Havîna par ez û hevalên xwe çûn Heskîfê. Heskîf bajarekî kevnar e li ser çemê Dîcleyê, li herêma Êlihê. Em sibê zû bi otobusê ji Êlihê derketin. Rê nêzîkî saetekê kişand.',
+    'Dema ku em gihîştin, hewa pir germ bû. Em li kêleka avê rûniştin û me bêhna xwe veda. Berê şikeftên li çiyê û pira kevn li wir bûn. Niha piraniya bajarê kevn di bin ava bendavê de ye.',
+    'Kalekî ji gund ji me re got: „Ez li vir mezin bûm. Mala min jî niha di bin avê de ye.“ Em hemû bêdeng man. Êvarê em vegeriyan Êlihê. Ew rojeke xweş û xemgîn bû.'],
+  tr: ['Letzten Sommer sind meine Freunde und ich nach Heskîf gefahren. Heskîf ist eine uralte Stadt am Tigris, in der Region Êlih. Wir fuhren früh morgens mit dem Bus von Êlih los. Die Fahrt dauerte etwa eine Stunde.',
+    'Als wir ankamen, war es sehr heiß. Wir setzten uns ans Wasser und ruhten uns aus. Früher waren dort die Höhlen am Berg und die alte Brücke. Heute liegt der größte Teil der Altstadt unter dem Wasser des Stausees.',
+    'Ein alter Mann aus dem Dorf sagte uns: „Ich bin hier aufgewachsen. Auch mein Haus liegt jetzt unter Wasser.“ Wir alle schwiegen. Am Abend kehrten wir nach Êlih zurück. Es war ein schöner und trauriger Tag.'],
+  gloss: [['havîna par', 'letzten Sommer'], ['kevnar', 'uralt'], ['herêm', 'Region'], ['herêma', 'Region (mit Ezafe)'], ['kişand', 'dauerte (wörtl. zog)'], ['kêleka', 'Seite, neben'], ['bêhna xwe veda', 'ruhte sich aus'], ['şikeft', 'Höhle'], ['şikeftên', 'Höhlen (mit Ezafe)'], ['piraniya', 'der größte Teil'], ['bendav', 'Staudamm'], ['bendavê', 'des Staudamms'], ['kalekî', 'ein alter Mann (Oblique)'], ['mezin bûm', 'ich bin aufgewachsen'], ['bêdeng man', 'blieben still'], ['vegeriyan', 'kehrten zurück']],
+  q: [['Wo liegt Heskîf?', 'Am Tigris, in der Region Êlih', ['Am Euphrat bei Riha', 'In den Bergen bei Wan', 'Am Meer']], ['Wie war das Wetter?', 'Sehr heiß', ['Regnerisch', 'Kalt', 'Neblig']], ['Was erzählt der alte Mann?', 'Sein Haus liegt heute unter Wasser', ['Er ist Busfahrer', 'Er hat die Brücke gebaut', 'Er zieht nach Amed']]] },
+
+{ id: 't-a2-newroz', lv: 'A2', title: 'Newroz', de: 'Das Neujahrsfest', intro: 'Feuer, Tanz und eine alte Legende.',
+  body: ['Newroz roja yekem a biharê ye. Kurd wê her sal di 21ê Adarê de pîroz dikin. Li gorî efsaneyê, hesinkarekî bi navê Kawa li dijî mîrê zalim Dehak serî hilda û li ser çiyê agirek pê xist. Ji wê rojê ve, agirê Newrozê nîşana azadiyê û destpêkeke nû ye.',
+    'Li Amedê bi hezaran kes tên meydana Newrozê. Ew cilên rengîn li xwe dikin, govendê digirin û stranan dibêjin. Zarok li dora agir dilîzin.',
+    'Malbat xwarinên taybet çêdikin û diçin serdana xizmên xwe. Gelek kes dibêjin: „Newroz pîroz be!“ Bersiv ev e: „Li te jî pîroz be!“'],
+  tr: ['Newroz ist der erste Frühlingstag. Die Kurden feiern es jedes Jahr am 21. März. Der Legende nach erhob sich ein Schmied namens Kawa gegen den grausamen Herrscher Dehak und entzündete auf dem Berg ein Feuer. Seit diesem Tag ist das Newroz-Feuer ein Zeichen der Freiheit und eines Neubeginns.',
+    'In Amed kommen Tausende Menschen auf den Newroz-Platz. Sie ziehen bunte Kleider an, tanzen Govend und singen Lieder. Die Kinder spielen rund um das Feuer.',
+    'Familien kochen besondere Gerichte und besuchen ihre Verwandten. Viele sagen: „Frohes Newroz!“ Die Antwort lautet: „Dir auch ein frohes Fest!“'],
+  gloss: [['yekem', 'erste/r'], ['Adar', 'März'], ['Adarê', 'März (Oblique)'], ['pîroz kirin', 'feiern'], ['pîroz dikin', 'feiern'], ['efsane', 'Legende'], ['efsaneyê', 'Legende (Oblique)'], ['hesinkar', 'Schmied'], ['hesinkarekî', 'ein Schmied (Oblique)'], ['zalim', 'grausam, tyrannisch'], ['serî hilda', 'erhob sich, rebellierte'], ['agir', 'Feuer'], ['agirek', 'ein Feuer'], ['pê xist', 'zündete an'], ['nîşan', 'Zeichen'], ['nîşana', 'Zeichen (mit Ezafe)'], ['meydan', 'Platz'], ['rengîn', 'bunt'], ['dora', 'rund um'], ['taybet', 'besonders'], ['xizm', 'Verwandte/r'], ['pîroz be', 'gesegnet sei / frohes Fest']],
+  q: [['Wann wird Newroz gefeiert?', 'Am 21. März', ['Am 1. Januar', 'Am 21. Juni', 'Am 15. Mai']], ['Wer ist Kawa in der Legende?', 'Ein Schmied', ['Ein Hirte', 'Ein Fürst', 'Ein Sänger']], ['Was antwortet man auf „Newroz pîroz be!“?', 'Li te jî pîroz be!', ['Spas, baş im.', 'Bi xêr hatî!', 'Oxir be!']]] }
+);
