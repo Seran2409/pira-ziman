@@ -1,0 +1,28 @@
+{
+  "name": "Pira Ziman · Kurmancî lernen",
+  "short_name": "Pira Ziman",
+  "lang": "de",
+  "description": "Kurmancî von A1 bis C2 mit Schwerpunkt Amed und Êlih.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF0EC",
+  "theme_color": "#9E2A4B",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
