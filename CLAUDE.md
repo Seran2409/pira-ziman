@@ -87,18 +87,23 @@ python3 tools/build_pages.py          # schreibt die Website in die Repo-Wurzel 
 
 Jeder kurdische Text in der App hat eine Aufnahme. Der Schlüssel hängt nur vom kurdischen Text ab (`md5('mms1|' + text)`), nicht von der Oberflächensprache.
 
-1. `tools/unpack_banks.py`: holt die Einzel-MP3s aus `audio/m*.js` zurück nach `audio_build/mms/` (nach einem frischen Klon).
+1. `tools/unpack_banks.py`: holt die Einzel-MP3s aus `audio/m*.js` zurück nach `audio_build/mms/` (nach einem frischen Klon, wenn nur neu gepackt werden soll).
 2. `tools/run_collect.py` (nutzt `collect.js`, Playwright): sammelt alle Sprechtexte aus der gebauten App → `audio_build/items.json`.
-3. `tools/gen_mms.py ITEMS OUTDIR SHARD NSHARDS`: erzeugt fehlende Aufnahmen mit der neuronalen Stimme **MMS-TTS** (`facebook/mms-tts-kmr-script_latin`, Modell in `source/voice/`, gitignored), reines NumPy (`vits_np.py`). Zwei Shards parallel brauchen für alle rund 4.570 Texte etwa 1,5 Stunden. Einstellungen (Version 2, für Klarheit):
-   - ruhigeres Sampling: `noise_scale` 0.42, `noise_scale_w` 0.5, Tempo 0.92 (Sätze) bzw. 0.85 (Wörter)
+3. `tools/gen_mms.py ITEMS audio_build/raw SHARD NSHARDS`: erzeugt fehlende **Rohaufnahmen** (WAV, 16 kHz, unbearbeitet) mit der neuronalen Stimme **MMS-TTS** (`facebook/mms-tts-kmr-script_latin`, Modell in `source/voice/`, gitignored), reines NumPy (`vits_np.py`). Zwei Shards parallel brauchen für alle rund 4.570 Texte etwa 2 Stunden. Einstellungen (Version 2):
+   - ruhigeres Sampling für saubere Aussprache: `noise_scale` 0.42, `noise_scale_w` 0.5, Tempo 0.92 (Sätze) bzw. 0.85 (Wörter)
    - einzelne Wörter: drei Varianten, genommen wird die typischste (MFCC + DTW, `medoid()`), damit keine Ausreißer durchrutschen
-   - Nachbearbeitung mit ffmpeg (`CHAIN`): Rauschminderung, weniger Dröhnen, mehr Präsenz bei 3 kHz und Höhen für s, ş, ç, De-Esser, Kompressor, Limiter. Ergebnis etwa −16 LUFS, Spitzen unter −1 dB
-   - MP3 mit 24 kHz und 48 kbit/s, Tiefpass bei 8 kHz (die Stimme selbst reicht nur bis 8 kHz). Version 1 war 16 kHz / 24 kbit/s und bei etwa 5,5 kHz abgeschnitten
-   - Einstellungen lassen sich zum Ausprobieren über `PIRA_NS`, `PIRA_NSW`, `PIRA_TAKES_WORD` und `PIRA_CHAIN` ändern
-4. `tools/pack_mms.py audio_build/items.json`: packt die MP3s in Banken von etwa 400 KB `dist/audio/m{n}.js` (Anzahl `nb` automatisch, Zuordnung FNV-Hash % nb), schreibt `index.json` und die Lautschrift `ipa.json` (braucht `espeak-ng`; Pfad über `ESPEAK_NG`, Daten über `ESPEAK_DATA_PATH`).
-5. `build.py`, dann `build_pages.py`.
+   - zum Ausprobieren über `PIRA_NS`, `PIRA_NSW`, `PIRA_TAKES_WORD` änderbar
+   - `audio_build/raw/` ist gitignored (rund 200 MB). Fehlt der Ordner, muss neu synthetisiert werden (die Erzeugung ist deterministisch)
+4. `tools/encode_mms.py ITEMS`: **Klanggestaltung** von `raw/` nach `mms/`, parallel, wenige Minuten. Hier wird am Klang gefeilt, ohne neu zu synthetisieren:
+   - Stimmcharakter `VOICE` (Umgebungsvariable `PIRA_VOICE`): `freundlich` (aktiv, von Seran ausgewählt: etwa 2 Halbtöne höher, Satzmelodie 20 % lebendiger, leichtes „Lächeln“), `sauber` (Originalstimme), `hell` (experimentell, frauenähnlich, klingt künstlicher)
+   - Tonhöhe und Melodie per TD-PSOLA (`tools/voice_fx.py`), „Lächeln“ per `asetrate` + `atempo` (Formanten und Tonhöhe +6 %). Zeitbereichsverfahren halten die Obertöne sauber; `rubberband` (Phase-Vocoder) verschmiert sie hörbar und wird deshalb nicht verwendet
+   - Säubern mit ffmpeg: Hochpass, Rauschminderung, weniger kastig (−2,5 dB bei 350 Hz), etwas Wärme, Präsenz bei 2,6 kHz, weichere Höhen, De-Esser, sanfter Kompressor, Limiter, kurze Ein- und Ausblendung. Ergebnis etwa −16 LUFS, Spitzen unter −1 dB
+   - MP3 mit 24 kHz und 64 kbit/s, Tiefpass bei 8 kHz (die Stimme selbst reicht nur bis 8 kHz). Version 1 war 16 kHz / 24 kbit/s und bei etwa 5,5 kHz abgeschnitten
+   - Achtung, ffmpeg 6.1: `aresample=…:resampler=soxr` **nach** `atempo` hängt sich auf. Der Resampler steht deshalb immer davor
+5. `tools/pack_mms.py audio_build/items.json`: packt die MP3s in Banken von etwa 400 KB `dist/audio/m{n}.js` (Anzahl `nb` automatisch, Zuordnung FNV-Hash % nb), schreibt `index.json` und die Lautschrift `ipa.json` (braucht `espeak-ng`; Pfad über `ESPEAK_NG`, Daten über `ESPEAK_DATA_PATH`).
+6. `build.py`, dann `build_pages.py`.
 
-Bewertung im Aussprache-Trainer: MFCC + DTW, `score = 100 * clamp((2.62 - d) / 0.91)`. Kalibriert: derselbe Satz von einer anderen Stimme ≈ 78, ein anderer Satz ≈ 25. Mit den Aufnahmen der Version 2 geprüft: gleicher Satz alt gegen neu = 100, verschiedene Sätze 22 bis 42. Die MFCCs werden pro Aufnahme normalisiert, deshalb ändert die Klangbearbeitung die Bewertung nicht. Für einzelne Wörter ist das Maß unzuverlässig, deshalb übt der Trainer Sätze. `tools/mfcc_dtw.py` ist die Python-Referenz.
+Bewertung im Aussprache-Trainer: MFCC + DTW, `score = 100 * clamp((2.62 - d) / 0.91)`. Kalibriert: derselbe Satz von einer anderen Stimme ≈ 78, ein anderer Satz ≈ 25. Mit den Aufnahmen der Version 2 geprüft: gleicher Satz alt gegen neu = 100, gleicher Satz ‚sauber‘ gegen ‚freundlich‘ = 100, verschiedene Sätze 13 bis 42. Die MFCCs werden pro Aufnahme normalisiert, deshalb ändert die Klangbearbeitung die Bewertung nicht. Für einzelne Wörter ist das Maß unzuverlässig, deshalb übt der Trainer Sätze. `tools/mfcc_dtw.py` ist die Python-Referenz.
 
 ## Gamifizierung (`47-game.js`)
 

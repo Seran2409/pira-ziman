@@ -1,8 +1,7 @@
-"""Synthesise items with the MMS Kurmanji VITS voice (numpy). Usage: gen_mms.py ITEMS_JSON OUTDIR SHARD NSHARDS
+"""Synthesise items with the MMS Kurmanji VITS voice (numpy). Usage: gen_mms.py ITEMS_JSON RAWDIR SHARD NSHARDS
 
-Clarity (v2): calmer sampling (lower noise), single words picked as the most typical of three takes,
-then a speech cleanup chain (denoise, de-mud, presence and treble lift, de-esser, compression, limiter)
-and 24 kHz / 48 kbps MP3 with the full 8 kHz voice band (v1 was 16 kHz / 24 kbps, cut at about 5.5 kHz)."""
+Writes raw 16 kHz WAVs only. Clarity (v2): calmer sampling (lower noise), single words picked as the
+most typical of three takes. Voice character, cleanup and MP3 encoding happen in encode_mms.py."""
 import sys, os, re, json, hashlib, subprocess, wave, time
 os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 import numpy as np
@@ -11,19 +10,7 @@ from vits_np import Vits
 
 PARAMS = dict(noise_scale=float(os.environ.get('PIRA_NS', 0.42)), noise_scale_w=float(os.environ.get('PIRA_NSW', 0.5)))
 TAKES_WORD, TAKES_PHRASE = int(os.environ.get('PIRA_TAKES_WORD', 3)), int(os.environ.get('PIRA_TAKES_PHRASE', 1))
-OUT_SR, OUT_BR = 24000, '48k'
-CHAIN = os.environ.get('PIRA_CHAIN', ','.join([
-    'highpass=f=70',
-    'afftdn=nr=8:nf=-42',                    # light denoise of the model hiss
-    'aresample=24000:resampler=soxr:precision=28',
-    'equalizer=f=220:t=q:w=1.0:g=-2.5',      # less boom
-    'equalizer=f=3000:t=q:w=0.8:g=3.5',      # consonant presence
-    'treble=g=2.5:f=5500',                   # crisper s, ş, ç, f
-    'deesser=i=0.25:m=0.5:f=0.5',
-    'volume=5dB',
-    'acompressor=threshold=0.1:ratio=3:attack=4:release=90:makeup=2.6',
-    'alimiter=limit=0.89:attack=2:release=40:level=0',   # about -16 LUFS, peaks under -1 dB
-    'afade=t=in:d=0.008']))
+
 RATE_PHRASE, RATE_WORD = 0.92, 0.85
 SR = 16000
 ONES = ['sifir', 'yek', 'du', 'sê', 'çar', 'pênc', 'şeş', 'heft', 'heşt', 'neh', 'deh', 'yazdeh', 'dazdeh', 'sêzdeh',
@@ -109,35 +96,34 @@ def render(v, text, word):
     return y
 
 
-def encode(wav, mp3):
-    subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', wav, '-af', CHAIN, '-ac', '1', '-ar', str(OUT_SR),
-                    '-c:a', 'libmp3lame', '-b:a', OUT_BR, '-cutoff', '8000', mp3], check=True)
-
-
 def name_for(text):
     return hashlib.md5(('mms1|' + text).encode('utf-8')).hexdigest()
 
 
+def write_wav(path, y, sr=SR):
+    pcm = (np.clip(y, -1, 1) * 32767).astype('<i2')
+    with wave.open(path + '.tmp', 'wb') as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(pcm.tobytes())
+    os.replace(path + '.tmp', path)
+
+
 def main():
-    items_path, outdir, shard, nsh = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
-    os.makedirs(outdir, exist_ok=True)
+    """Synthesise raw 16 kHz WAVs (no processing) into RAWDIR. Sound design happens in encode_mms.py,
+    so it can be changed without synthesising again."""
+    items_path, rawdir, shard, nsh = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
+    os.makedirs(rawdir, exist_ok=True)
     items = json.load(open(items_path, encoding='utf-8'))
     v = Vits(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'voice'))
     todo = [(k, t) for i, (k, t) in enumerate(items) if i % nsh == shard]
     t0 = time.time(); done = 0
     for k, t in todo:
-        out = os.path.join(outdir, name_for(t) + '.mp3')
+        out = os.path.join(rawdir, name_for(t) + '.wav')
         if os.path.exists(out) and os.path.getsize(out) > 0:
             continue
         y = render(v, t, word=(' ' not in k))
         if y is None:
             continue
-        wav = out[:-4] + f'.{shard}.wav'
-        pcm = (np.clip(y, -1, 1) * 32767).astype('<i2')
-        with wave.open(wav, 'wb') as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
-        encode(wav, out + '.tmp.mp3')
-        os.replace(out + '.tmp.mp3', out); os.remove(wav)
+        write_wav(out, y)
         done += 1
         if done % 50 == 0:
             print(f'shard {shard}: {done}/{len(todo)} in {time.time() - t0:.0f}s', flush=True)

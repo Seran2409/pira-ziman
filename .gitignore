@@ -8,3 +8,4 @@ source/tools/__pycache__/
 # Sprachmodell (145 MB, zu groß für Git): facebook/mms-tts-kmr-script_latin von Hugging Face nach source/voice/ laden
 source/voice
 source/audio_build/mms_v1/
+source/audio_build/raw/
