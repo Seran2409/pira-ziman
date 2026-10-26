@@ -1,5 +1,5 @@
 """Turn source/dist/pira-ziman.html into the GitHub Pages site in the repo root (index.html, audio/, sw.js, manifest, icons, README)."""
-import os, shutil, json
+import os, shutil, json, stat, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # source/
 SITE = os.environ.get('PIRA_SITE', os.path.dirname(ROOT))  # repo root = GitHub Pages
 GENERATED = ['index.html', 'audio', 'sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', '.nojekyll', 'README.md']
@@ -33,10 +33,13 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {{
 </html>
 '''
 NEW_AUDIO = os.path.isdir(ROOT + '/dist/audio')  # fresh clone without pack_mms run: keep the published audio/
+def force_remove(fn, path, _):  # Windows: read-only folders (OneDrive sets the flag) cannot be removed until it is cleared
+    os.chmod(path, stat.S_IWRITE); fn(path)
+RMTREE_HANDLER = {'onexc' if sys.version_info >= (3, 12) else 'onerror': force_remove}
 for f in GENERATED:  # only remove what this script generates; source/, CLAUDE.md, .git stay
     if f == 'audio' and not NEW_AUDIO: continue
     p = os.path.join(SITE, f)
-    if os.path.isdir(p): shutil.rmtree(p)
+    if os.path.isdir(p): shutil.rmtree(p, **RMTREE_HANDLER)
     elif os.path.exists(p): os.remove(p)
 os.makedirs(SITE, exist_ok=True)
 open(SITE + '/index.html', 'w', encoding='utf-8').write(page)

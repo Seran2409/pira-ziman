@@ -14,6 +14,19 @@
       "Bash(python3 tools/encode_mms.py *)",
       "Bash(python3 tools/pack_mms.py *)",
       "Bash(python3 tools/unpack_banks.py)",
+      "Bash(py build.py)",
+      "Bash(py source/build.py)",
+      "Bash(py tests/smoke.py *)",
+      "Bash(py source/tests/smoke.py *)",
+      "Bash(py tests/screens.py *)",
+      "Bash(py source/tests/screens.py *)",
+      "Bash(py tools/build_pages.py)",
+      "Bash(py source/tools/build_pages.py)",
+      "Bash(py tools/run_collect.py)",
+      "Bash(py source/tools/run_collect.py)",
+      "Bash(py tools/encode_mms.py *)",
+      "Bash(py tools/pack_mms.py *)",
+      "Bash(py tools/unpack_banks.py)",
       "Bash(node --check *)",
       "Bash(git status *)",
       "Bash(git diff *)",
@@ -40,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/nach_aenderung.py",
+            "command": "\"$(command -v py || echo python3)\" -X utf8 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/nach_aenderung.py",
             "timeout": 60
           }
         ]
@@ -51,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/sitzungsstart.py",
+            "command": "\"$(command -v py || echo python3)\" -X utf8 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/sitzungsstart.py",
             "timeout": 20
           }
         ]
