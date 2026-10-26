@@ -1,6 +1,7 @@
 """Sound design for the app recordings: raw 16 kHz WAVs (gen_mms.py) -> finished MP3s.
 
 Usage: encode_mms.py ITEMS_JSON [RAWDIR] [OUTDIR]     (defaults: audio_build/raw, audio_build/mms)
+Only encodes raw files that are newer than their MP3. PIRA_FORCE=1 re-encodes all (after a voice/chain change).
 
 Steps per recording
 1. Voice character (voice_fx.py): TD-PSOLA raises the pitch a little and widens the melody,
@@ -79,19 +80,23 @@ def main():
     rawdir = sys.argv[2] if len(sys.argv) > 2 else ROOT + '/audio_build/raw'
     outdir = sys.argv[3] if len(sys.argv) > 3 else ROOT + '/audio_build/mms'
     os.makedirs(outdir, exist_ok=True)
-    jobs, missing = [], 0
+    force = os.environ.get('PIRA_FORCE') == '1'   # re-encode everything, e.g. after changing VOICE or the chains
+    jobs, missing, current = [], 0, 0
     for _, t in items:
         n = name_for(t)
-        raw = f'{rawdir}/{n}.wav'
+        raw, mp3 = f'{rawdir}/{n}.wav', f'{outdir}/{n}.mp3'
         if not os.path.exists(raw):
             missing += 1
             continue
-        jobs.append((raw, f'{outdir}/{n}.mp3'))
+        if not force and os.path.exists(mp3) and os.path.getmtime(mp3) >= os.path.getmtime(raw):
+            current += 1
+            continue
+        jobs.append((raw, mp3))
     with ProcessPoolExecutor(int(os.environ.get('PIRA_JOBS', os.cpu_count() or 2))) as ex:
         for i, _ in enumerate(ex.map(encode_one, jobs, chunksize=8), 1):
             if i % 500 == 0:
                 print(f'encoded {i}/{len(jobs)}', flush=True)
-    print(f'encoded {len(jobs)}, raw missing {missing}, voice {VOICE}', flush=True)
+    print(f'encoded {len(jobs)}, already current {current}, without raw {missing}, voice {VOICE}', flush=True)
 
 
 if __name__ == '__main__':

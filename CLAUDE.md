@@ -1,185 +1,92 @@
 # Pira Ziman · Hinweise für Claude Code
 
-Lern-App für **Kurmancî (Nordkurdisch)** von A1 bis C2, mit Schwerpunkt auf der Sprache in **Amed (Diyarbakır)** und **Êlih (Batman)**. Schrift: Hawar-Alphabet. Oberfläche und Erklärungen sind zurzeit auf Deutsch.
+Lern-App für **Kurmancî (Nordkurdisch)** von A1 bis C2, mit Schwerpunkt auf der Sprache in **Amed (Diyarbakır)** und **Êlih (Batman)**. Schrift: Hawar-Alphabet. Oberfläche und Erklärungen sind zurzeit auf Deutsch. Gamifiziert (Stufen, Ränge, Tagesaufgaben, Zêr) und in den Farben der kurdischen Flagge gestaltet.
 
 - Live: https://seran2409.github.io/pira-ziman/ (GitHub Pages, Branch `main`, Ordner `/`)
-- Repo: `Seran2409/pira-ziman`
+- Repo: `Seran2409/pira-ziman`. Ansprechperson und Entscheiderin: Seran. Mit ihr auf Deutsch sprechen.
 
 ## Status und Ziel
 
-**Die Web-App ist ein erster Entwurf.** Sie dient als Prototyp für Inhalte, Didaktik und Gestaltung. Zwei Ziele stehen fest:
+**Die Web-App ist ein erster Entwurf.** Fest geplant sind eine **deutsche und eine englische Version** und eine **native App für Android und iOS**. Neue Arbeit soll diese Ziele erleichtern und nicht verbauen: Inhalte sauber vom Code trennen, deutsche Texte nicht weiter im Code verstreuen, nichts einbauen, was nur im Browser geht, ohne Ausweg für eine native Hülle. Details und Vorgehen: `docs/ROADMAP.md`.
 
-1. **Eine deutsche und eine englische Version.** Oberfläche, Erklärungen, Übersetzungen und Übungen gibt es dann jeweils komplett auf Deutsch oder Englisch. Kurdisch bleibt die Zielsprache.
-2. **Eine funktionierende native App für Android und iOS**, die in den Stores erscheint.
-
-Neue Arbeit soll diese Ziele erleichtern und nicht verbauen. Der Abschnitt [Roadmap](#roadmap) beschreibt, wie.
-
-## Aufbau des Repos
+## Aufbau
 
 ```
-/                       ← von GitHub Pages ausgeliefert (generiert, nicht von Hand ändern)
+/                       von GitHub Pages ausgeliefert, GENERIERT von source/tools/build_pages.py, nie von Hand ändern
   index.html            die komplette App in einer Datei
-  audio/m0.js …         Aussprache-Aufnahmen (MP3 als Base64), werden bei Bedarf nachgeladen
-  sw.js                 Service Worker (Offline; VERSION bei jeder Auslieferung erhöhen)
-  manifest.webmanifest, icon.svg, icon-192.png, icon-512.png, .nojekyll
-  README.md             wird aus source/tools/README_site.md kopiert
+  audio/m*.js           Aussprache-Aufnahmen als Banken (MP3 in Base64), werden bei Bedarf nachgeladen
+  sw.js, manifest.webmanifest, icon*.png, icon.svg, .nojekyll, README.md
 source/
   build.py              setzt src/ zu dist/pira-ziman.html zusammen
-  src/                  Quelltext (siehe unten)
+  src/                  Quelltext: 00-01 HTML/CSS, 1x-4x Code, 5x-7x Inhalte (Reihenfolge ist Programmlogik)
   tools/                Build-, Audio- und Pages-Skripte
-  audio_build/          items.json (alle Sprechtexte), index.json (Audio-Schlüssel), ipa.json, silent.mp3
-                        mms/ (Einzel-MP3s, gitignored)
-  tests/smoke.py        Playwright-Test: alle Lektionen und Niveautests durchspielen
+  audio_build/          items.json (alle Sprechtexte), index.json, ipa.json; raw/ und mms/ gitignored
+  tests/                smoke.py (alle Lektionen durchspielen), screens.py (Screenshots)
+  requirements.txt      Python-Pakete
+docs/ROADMAP.md         deutsche/englische Version, native App, Lizenz der Stimme
+.claude/                Regeln, Skills, Agenten, Hooks und Einstellungen für Claude Code
 ```
 
-### `source/src/`: Reihenfolge ist Programmlogik
+Ausführliches Wissen steht in `.claude/rules/` und lädt automatisch, sobald du die passenden Dateien liest:
 
-`build.py` hängt die Dateien so aneinander: `00-head.html`, `01-body.html`, dann alle **Daten** `[5-9]*.js`, dann die eingebetteten Audio-Infos (`PZ.audio`, `PZ.silent`, `PZ.ipa`), dann aller **Code** `[1-4]*.js` und zum Schluss `buildVForms(); boot();`. Alles läuft in einem einzigen Skript-Scope.
+| Regel | gilt für | Inhalt |
+|---|---|---|
+| `architektur.md` | `source/src/**` | Zusammenbau, Wrapper-Prinzip, Router, Speicherstand |
+| `inhalte.md` | `source/src/5-7*.js` | Datenmodell der Lektionen, Sprachregeln, Aufnahmen für neue Texte |
+| `gestaltung.md` | CSS, `47-game.js`, `48-look.js` | Flaggenfarben, Tokens, saftige Widgets, Glas-Leiste |
+| `gamification.md` | `47-game.js`, `10-core.js` | Stufen, Ränge, Tagesaufgaben, Zêr, Mertal |
+| `audio.md` | `source/tools/**`, Audio-Code | Aufnahmen erzeugen, Klang, Banken, Aussprache-Bewertung |
 
-| Datei | Inhalt |
-|---|---|
-| `00-head.html` | CSS: Design-Tokens, Layout, alle Komponenten |
-| `01-body.html` | App-Rahmen (Seitenleiste, Hauptbereich, Lektions-Overlay) |
-| `10-core.js` | Helfer, Speicherstand `S`, XP/Serie, Karteikarten (SRS), Abzeichen, Navigation, Router `VIEWS`, Startseite, Lernpfad, `boot()` |
-| `15-audio.js` | Audio: Bank-Loader `PZA`, Wiedergabe, Tempo |
-| `20-learn.js` | Lektionsablauf (Theorie, Wörter, Dialog, Übungen), `finish()`, Niveautests |
-| `30-verbs.js` | Verbtrainer (10 Zeiten inkl. Ergativ), `buildVForms()` |
-| `40-tools.js` | Karteikarten, Lesen, Wörterbuch, Grammatik, Methode, Profil |
-| `45-pron.js` | Aussprache-Trainer „Deng“: Aufnahme, MFCC + DTW-Bewertung, Lautschule, Hörtraining, Shadowing |
-| `47-game.js` | Gamifizierung (siehe unten). Ummantelt Funktionen aus früheren Dateien |
-| `50-53-data-*.js` | Verben, Grammatik-Referenz, Redemittel, Laute und Minimalpaare |
-| `60-6b-*.js` | Lektionen A1 bis C2 (je Niveau zwei Dateien, `6a/6b` = C2) |
-| `70-72-texts-*.js` | Lesetexte |
+## Befehle
 
-**Ummanteln statt umschreiben:** Funktionsdeklarationen sind global. Spätere Dateien ersetzen sie mit einem Wrapper (`const _addXP = addXP; addXP = function (n) { … _addXP(n) … }`). So hängt sich `47-game.js` an `addXP`, `finish`, `renderSideFoot`, `boot`, `VIEWS.home` und `VIEWS.profile`. Wer eine dieser Funktionen ändert, muss die Wrapper mitdenken.
-
-### Datenmodell
-
-Lektion (`PZ.lessons.push({...})`):
-
-| Feld | Bedeutung |
-|---|---|
-| `id`, `lv` | z. B. `a1-1`, `A1` |
-| `title`, `sub`, `goal` | kurdischer Titel, deutscher Untertitel, Lernziel |
-| `th` | Theorie als HTML. Kurdisches in `<span class="ku">`. Helfer `T(kopf, zeilen)` für Tabellen und `EX([[ku, de]])` für Beispiele |
-| `vocab` | `[ku, de, merkhilfe?]` |
-| `dlg` | `[sprecher, ku, de]` |
-| `s` | Beispielsätze `[ku, de]` (Quelle für Satzbau, Tippen, Hören) |
-| `g` | Lückensätze `[satz mit ___, lösung, optionen, erklärung]` |
-| `dia` | Hinweise zur Sprache in Amed und Êlih (HTML) |
-
-Lesetext: `id, lv, title, de, intro, body, tr, gloss, q`. Verb: `inf, de, pr, pa, tr, core, note`.
-
-Speicherstand `S` (localStorage-Schlüssel `piraziman.v1`, siehe `fresh()` in `10-core.js`): `xp, days{datum: xp}, lessons{id: {stars, best, times, last, lastStars}}, levels, cards{ku: {i, e, d, r, l}}, texts, verbs{n, ok}, badges, reviews, pron{n, best, quiz, qn}, game{…}` sowie Einstellungen. Neue Felder immer in `fresh()` und, wenn es Objekte sind, in `merge()` eintragen, damit alte Speicherstände weiter laden. Export und Import als JSON gibt es im Profil. Auf claude.ai synchronisiert die App zusätzlich über `window.claude` (auf GitHub Pages ohne Wirkung).
-
-## Bauen und testen
+Alles im Ordner `source/`:
 
 ```bash
-cd source
-python3 build.py                      # → dist/pira-ziman.html
-python3 tests/smoke.py dist/pira-ziman.html   # alle 54 Lektionen + Niveautests, Ausgabe GAME/STATE
-python3 tools/build_pages.py          # schreibt die Website in die Repo-Wurzel (index.html, audio/, sw.js, Icons, README.md)
+python3 build.py                              # → dist/pira-ziman.html
+python3 tests/smoke.py dist/pira-ziman.html   # alle Lektionen + Niveautests, Zeile GAME {…}
+python3 tests/screens.py                      # Screenshots nach tests/out/, meldet JS-Fehler und Seitwärts-Scrollen
+python3 tools/build_pages.py                  # Website in die Repo-Wurzel schreiben
 ```
 
-`build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner (frischer Klon), entweder die Audio-Pipeline laufen lassen oder `cp -r ../audio dist/audio`. Vor jedem Push: `VERSION` in `build_pages.py` erhöhen (zurzeit `pira-v6`), sonst liefern installierte Apps die alte Version aus dem Cache.
+Einrichtung: `python3 -m pip install -r source/requirements.txt && python3 -m playwright install chromium`. Für Aufnahmen zusätzlich ffmpeg, eSpeak NG und das Stimmmodell (siehe `.claude/rules/audio.md`). `build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner nach einem frischen Klon und haben sich die Aufnahmen nicht geändert: `cp -r ../audio dist/audio`.
 
-### Audio-Pipeline
+**Vor jedem Push** die Service-Worker-Version `VERSION` in `source/tools/build_pages.py` erhöhen (zurzeit `pira-v6`), sonst liefern installierte Apps die alte Fassung aus dem Cache.
 
-Jeder kurdische Text in der App hat eine Aufnahme. Der Schlüssel hängt nur vom kurdischen Text ab (`md5('mms1|' + text)`), nicht von der Oberflächensprache.
+## Skills und Agenten
 
-1. `tools/unpack_banks.py`: holt die Einzel-MP3s aus `audio/m*.js` zurück nach `audio_build/mms/` (nach einem frischen Klon, wenn nur neu gepackt werden soll).
-2. `tools/run_collect.py` (nutzt `collect.js`, Playwright): sammelt alle Sprechtexte aus der gebauten App → `audio_build/items.json`.
-3. `tools/gen_mms.py ITEMS audio_build/raw SHARD NSHARDS`: erzeugt fehlende **Rohaufnahmen** (WAV, 16 kHz, unbearbeitet) mit der neuronalen Stimme **MMS-TTS** (`facebook/mms-tts-kmr-script_latin`, Modell in `source/voice/`, gitignored), reines NumPy (`vits_np.py`). Zwei Shards parallel brauchen für alle rund 4.570 Texte etwa 2 Stunden. Einstellungen (Version 2):
-   - ruhigeres Sampling für saubere Aussprache: `noise_scale` 0.42, `noise_scale_w` 0.5, Tempo 0.92 (Sätze) bzw. 0.85 (Wörter)
-   - einzelne Wörter: drei Varianten, genommen wird die typischste (MFCC + DTW, `medoid()`), damit keine Ausreißer durchrutschen
-   - zum Ausprobieren über `PIRA_NS`, `PIRA_NSW`, `PIRA_TAKES_WORD` änderbar
-   - `audio_build/raw/` ist gitignored (rund 200 MB). Fehlt der Ordner, muss neu synthetisiert werden (die Erzeugung ist deterministisch)
-4. `tools/encode_mms.py ITEMS`: **Klanggestaltung** von `raw/` nach `mms/`, parallel, wenige Minuten. Hier wird am Klang gefeilt, ohne neu zu synthetisieren:
-   - Stimmcharakter `VOICE` (Umgebungsvariable `PIRA_VOICE`): `freundlich` (aktiv, von Seran ausgewählt: etwa 2 Halbtöne höher, Satzmelodie 20 % lebendiger, leichtes „Lächeln“), `sauber` (Originalstimme), `hell` (experimentell, frauenähnlich, klingt künstlicher)
-   - Tonhöhe und Melodie per TD-PSOLA (`tools/voice_fx.py`), „Lächeln“ per `asetrate` + `atempo` (Formanten und Tonhöhe +6 %). Zeitbereichsverfahren halten die Obertöne sauber; `rubberband` (Phase-Vocoder) verschmiert sie hörbar und wird deshalb nicht verwendet
-   - Säubern mit ffmpeg: Hochpass, Rauschminderung, weniger kastig (−2,5 dB bei 350 Hz), etwas Wärme, Präsenz bei 2,6 kHz, weichere Höhen, De-Esser, sanfter Kompressor, Limiter, kurze Ein- und Ausblendung. Ergebnis etwa −16 LUFS, Spitzen unter −1 dB
-   - MP3 mit 24 kHz und 64 kbit/s, Tiefpass bei 8 kHz (die Stimme selbst reicht nur bis 8 kHz). Version 1 war 16 kHz / 24 kbit/s und bei etwa 5,5 kHz abgeschnitten
-   - Achtung, ffmpeg 6.1: `aresample=…:resampler=soxr` **nach** `atempo` hängt sich auf. Der Resampler steht deshalb immer davor
-5. `tools/pack_mms.py audio_build/items.json`: packt die MP3s in Banken von etwa 400 KB `dist/audio/m{n}.js` (Anzahl `nb` automatisch, Zuordnung FNV-Hash % nb), schreibt `index.json` und die Lautschrift `ipa.json` (braucht `espeak-ng`; Pfad über `ESPEAK_NG`, Daten über `ESPEAK_DATA_PATH`).
-6. `build.py`, dann `build_pages.py`.
-
-Bewertung im Aussprache-Trainer: MFCC + DTW, `score = 100 * clamp((2.62 - d) / 0.91)`. Kalibriert: derselbe Satz von einer anderen Stimme ≈ 78, ein anderer Satz ≈ 25. Mit den Aufnahmen der Version 2 geprüft: gleicher Satz alt gegen neu = 100, gleicher Satz ‚sauber‘ gegen ‚freundlich‘ = 100, verschiedene Sätze 13 bis 42. Die MFCCs werden pro Aufnahme normalisiert, deshalb ändert die Klangbearbeitung die Bewertung nicht. Für einzelne Wörter ist das Maß unzuverlässig, deshalb übt der Trainer Sätze. `tools/mfcc_dtw.py` ist die Python-Referenz.
-
-## Gamifizierung (`47-game.js`)
-
-| Element | Regel |
+| | Wofür |
 |---|---|
-| **Ast (Stufe)** | Gesamt-XP für Stufe n: `25 · n · (n − 1)` (Stufe 2 = 50 XP, 5 = 500, 10 = 2250, 20 = 9500) |
-| **Ränge** | Nûhatî (1) · Şagirt (3) · Xwendekar (5) · Axaftvan (8) · Zimanzan (12) · Dengbêj (16) · Hosta (20) |
-| **Zêr (Gold)** | +5 je Tagesaufgabe, +15 Schatzkiste, +10 je Stufenaufstieg |
-| **Erkên rojê (Tagesaufgaben)** | 3 pro Tag, per Datum fest ausgelost (`pickQuests`), immer mindestens eine Lernaufgabe (Lektion oder Karteikarten). Je +10 XP und +5 Zêr |
-| **Sindoq (Schatzkiste)** | alle drei Aufgaben geschafft: +15 Zêr |
-| **Mertal (Serienschutz)** | kostet 40 Zêr, höchstens 2. Wird für verpasste Tage automatisch eingesetzt (`ensureDay`), die Tage landen in `S.game.frozen` und zählen für die Serie |
-| **Abzeichen** | `BADGES` in `10-core.js`, ergänzt um Ast 5/10/20, 10 Aufgaben, 7 Schatzkisten |
-| **Feiern** | `celebrate()` zeigt ein Overlay mit drehender Sonne und Konfetti in Flaggenfarben (respektiert `prefers-reduced-motion`) |
-| **Tagesziel** | die Sonne auf der Startseite: Jeder ihrer 21 Strahlen leuchtet für 1/21 des Tagesziels |
+| `/bauen` | bauen, alle Lektionen durchspielen, Screenshots ansehen |
+| `/veroeffentlichen [Änderung]` | Version erhöhen, Website bauen, committen, pushen, live prüfen (nur auf Anweisung) |
+| `/neue-lektion <Niveau> <Thema>` | Lektion schreiben, prüfen lassen, Aufnahmen erzeugen |
+| `/audio-erneuern [neu \| klang <stimme> \| alles]` | Aufnahmen für neue Texte oder anderen Klang |
+| Agent `kurmanci-lektor` | prüft kurdische Inhalte auf Rechtschreibung, Grammatik, Natürlichkeit, Amed/Êlih |
+| Agent `ui-pruefer` | prüft Screenshots gegen die Gestaltungsregeln |
 
-Zustand: `S.game = { zer, shields, frozen, day: { date, ids, done, chest, base }, quests, lvSeen, chests, bought }`. Aufgaben zählen über Zähler im Speicherstand gegenüber einem Tagesstart-Schnappschuss (`day.base`). Eine neue Aufgabe braucht also einen Zähler in `S`, der bei der Aktivität hochgezählt wird (Beispiel: `S.pron.qn` im Hörtraining), plus einen Eintrag in `QUESTS`. Neue XP-Quellen immer über `addXP()` laufen lassen, dann greifen Aufgaben, Stufen und Abzeichen automatisch.
+Hooks (`.claude/settings.json`): Nach jeder Änderung an `source/src/` baut `.claude/hooks/nach_aenderung.py` neu und prüft die JavaScript-Syntax. Meldet er einen Fehler, zuerst den beheben. Beim Start zeigt `sitzungsstart.py` den Projektstand (Git, Version, Audio).
 
-Grundsätze: belohnen, was beim Lernen hilft (Wiederholen, Sprechen, tägliche Routine), und nicht bloßes Klicken. Keine Strafen, keine Werbung, keine Käufe mit echtem Geld.
+## So arbeitest du hier
 
-## Gestaltung: Farben der kurdischen Flagge
+1. Änderungen im Quelltext unter `source/`, nie in den generierten Dateien der Wurzel.
+2. Nach Änderungen `/bauen`. Bei Oberflächen-Änderungen die Screenshots ansehen, hell und dunkel, Desktop und Handy (390 px).
+3. Neue oder geänderte kurdische Texte brauchen Aufnahmen: `/audio-erneuern`.
+4. Veröffentlichen nur, wenn Seran es möchte: `/veroeffentlichen`.
+5. Kleine, beschreibende Commits auf `main`, generierte Dateien nach `build_pages.py` mit committen. Kein `--force`.
 
-Rot, Weiß, Grün und die goldene Sonne mit **21 Strahlen**. Die Tokens stehen in `00-head.html` unter `:root`:
+## Regeln
 
-| Token | Hell | Dunkel | Verwendung |
-|---|---|---|---|
-| `--flag-red` / `--flag-white` / `--flag-green` / `--flag-sun` | #ED2024 / #FFFFFF / #278E43 / #FEBD11 | gleich | nur für Flaggen-Elemente: Streifen oben, Logo, App-Symbol, Konfetti |
-| `--hinar` (Rot) | #D0202A | #FF6B6F | Hauptaktionen, aktive Navigation, Titel-Akzente |
-| `--dicle` (Grün) | #1A7A3A | #4CC47A | Erfolg, Fortschritt, Tagesaufgaben, Serienschutz |
-| `--roj` (Sonnengold) | #F5B300 | #FFC83D | Sonne, Stufen-Abzeichen, Zêr, Sterne (als Fläche) |
-| `--roj-ink` | #8A6100 | #FFC83D | Gold als **Text** (Gold auf Weiß ist sonst zu kontrastarm) |
+- Vanilla JS, kein Framework, kein Bundler, keine Laufzeit-Abhängigkeiten außer Google Fonts.
+- Funktionen werden in späteren Dateien ummantelt, nicht umgeschrieben (`.claude/rules/architektur.md`).
+- Speicherstand-Schlüssel `piraziman.v1` und Lektions-IDs nie ändern. Neue Felder in `fresh()` und `merge()`.
+- Farben nur über Tokens, immer mit Wert für den Dunkelmodus. Die Sonne hat 21 Strahlen.
+- Kurdisch im Hawar-Alphabet mit ê, î, û, ç, ş. Standard zuerst, Amed/Êlih als Hinweis.
+- Gamifizierung belohnt Lernen, nicht Klicken: keine Strafen, keine Werbung, kein Echtgeld.
+- Inhalte sind KI-erstellt und noch nicht muttersprachlich geprüft. Vor einer Store-Veröffentlichung braucht es eine Prüfung durch Muttersprachler/innen.
+- Die Stimme (MMS-TTS) ist nur nicht-kommerziell nutzbar (CC BY-NC 4.0). Kostenpflichtige App, Abos oder Werbung nur mit anderen Aufnahmen.
 
-Weitere Tokens für Tiefe und Widgets (jeweils mit Dunkel-Variante):
+## Fertig heißt
 
-| Token | Verwendung |
-|---|---|
-| `--shade` | weicher Farbverlauf im Hintergrund: Sonnengold oben rechts, Rot oben links, Grün unten. Liegt fest hinter allem (`body::before`) und im Lektions-Overlay |
-| `--glass`, `--glass-line` | halbtransparente Fläche für Leiste unten, Seitenleiste und Chips in Widgets (mit `backdrop-filter: blur`) |
-| `--w-red`, `--w-sun`, `--w-green` (+ `-line`) | kräftigere Verläufe für Widgets: Klasse `card widget w-red` usw. Startseite: Tagesziel grün, Stufe rot, Tagesaufgaben gold, Wort des Tages rot, Sprichwort gold. `.tints` färbt eine Kartenliste reihum |
-| `--w-shadow` | Schatten der Karten |
-
-Die **Leiste unten auf dem Handy** schwebt wie bei Instagram: abgerundete Pille mit Abstand zum Rand, halbtransparent mit Unschärfe (`.bottom`).
-
-Regeln: Farben nur über Tokens, keine Hex-Werte im Code. Jede Farbe braucht einen Wert für den Dunkelmodus. Text in Gold immer mit `--roj-ink`. Die Sonne hat immer 21 Strahlen (`sunSVG()`, `flagMark()`). Die Navigationspunkte tragen kurdische Namen mit deutschem Untertitel.
-
-## Konventionen
-
-- Keine Abhängigkeiten zur Laufzeit außer Google Fonts. Vanilla JS, kein Framework, kein Bundler.
-- Kurdisch korrekt mit ê, î, û, ç, ş schreiben. Beim Prüfen von Antworten sind fehlende Sonderzeichen erlaubt (`flat()`), werden aber angezeigt.
-- Inhalte wurden mit KI erstellt und sind noch nicht von Muttersprachlern geprüft. Vor einer Store-Veröffentlichung muss eine muttersprachliche Prüfung passieren, am besten von Sprecher/innen aus Amed und Êlih.
-- Commits: kleine, beschreibende Commits auf `main`. Nach `build_pages.py` die generierten Dateien in der Wurzel mit committen.
-
-## Roadmap
-
-### 1. Deutsche und englische Version
-
-Heute sind deutsche Texte direkt in den Template-Strings (`*.js`) und in den Datenfeldern (`de`, `th`, `goal`, `sub`, `dia`, Erklärungen in `g`). Vorgehen:
-
-1. **Oberflächentexte** in Sprachdateien auslagern (`src/i18n/de.js`, `src/i18n/en.js`) und über `t('schlüssel')` holen. Die kurdischen Navigationsnamen bleiben, nur die Untertitel wechseln.
-2. **Inhalte trennen:** ein sprachneutraler kurdischer Kern (IDs, `ku`-Texte, Dialogsprecher, Lückensätze, Audio-Schlüssel) und pro Sprache eine Schicht mit Übersetzungen und Erklärungen. Vorschlag: Inhalte als JSON in `content/core/` und `content/de/`, `content/en/`. Das brauchen später auch die nativen Apps.
-3. **Erklärungen neu schreiben, nicht wörtlich übersetzen:** Die deutschen Texte vergleichen oft mit deutscher Grammatik und Aussprache („wie deutsches w“). Die englische Version braucht eigene Vergleiche für Englischsprachige.
-4. Übersetzungsübungen brauchen je Sprache eigene akzeptierte Antworten.
-5. Sprachwahl beim ersten Start und im Profil (`S.ui = 'de' | 'en'`). Der Speicherstand bleibt sprachunabhängig, Aufnahmen werden geteilt.
-6. Auslieferung: eine App mit Umschalter oder getrennte Pfade `/de/` und `/en/`, mit `hreflang`.
-
-### 2. Native App für Android und iOS
-
-Anforderungen: Offline-Nutzung inklusive aller rund 4.600 Aufnahmen (etwa 60 MB als Banken, als MP3-Dateien etwa 45 MB), Mikrofon und Aufnahme für den Trainer, dauerhafter lokaler Speicher, Erinnerungen an die Serie (Push), optional Sync zwischen Geräten, Datenschutzerklärung (Mikrofon), Konten bei Google Play und im Apple App Store.
-
-| Weg | Vorteil | Nachteil |
-|---|---|---|
-| **Capacitor** (Web-App in nativer Hülle) | nutzt den bestehenden Code fast unverändert, am schnellsten im Store | fühlt sich weniger nativ an; Audio als echte Dateien statt Base64-Banken nötig |
-| **React Native / Expo** | native Bedienung, große Community, JS-Logik teils übertragbar | Oberfläche neu bauen |
-| **Flutter** | sehr flüssige Oberfläche, ein Code für beide Plattformen | kompletter Neubau in Dart |
-
-Empfohlene Reihenfolge: zuerst die Inhalte als JSON auslagern (siehe i18n), dann mit **Capacitor** eine erste Store-Version bauen und später entscheiden, ob sich ein Neubau lohnt. Audio als MP3-Dateien mitliefern, Speicher über SQLite oder Preferences statt localStorage, Mikrofonrechte sauber anfragen.
-
-### Lizenz der Stimme
-
-Die Aufnahmen stammen von **MMS-TTS (Meta), Lizenz CC BY-NC 4.0: nur nicht-kommerziell.** Eine kostenlose App ohne Werbung ist damit vereinbar, eine kostenpflichtige App, Abos oder Werbung nicht. Für eine kommerzielle App braucht es Aufnahmen von Muttersprachler/innen (am besten aus Amed und Êlih; `audio_build/items.json` ist die fertige Liste aller Sätze) oder eine kommerziell lizenzierte Stimme. Die Lautschrift kommt von eSpeak NG (GPL, wird nur beim Bauen genutzt).
+- `build.py` und `tests/smoke.py` laufen ohne Fehler, alle Lektionen und Niveautests bestanden.
+- `tests/screens.py` meldet keine Probleme, und die Bilder sehen in hell und dunkel stimmig aus.
+- Bei neuen Texten: `pack_mms.py` meldet `missing 0`.
+- Nach einer Veröffentlichung: Die Live-Seite liefert die neue Service-Worker-Version.

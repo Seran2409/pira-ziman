@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 build.py)",
+      "Bash(python3 source/build.py)",
+      "Bash(python3 tests/smoke.py *)",
+      "Bash(python3 source/tests/smoke.py *)",
+      "Bash(python3 tests/screens.py *)",
+      "Bash(python3 source/tests/screens.py *)",
+      "Bash(python3 tools/build_pages.py)",
+      "Bash(python3 source/tools/build_pages.py)",
+      "Bash(python3 tools/run_collect.py)",
+      "Bash(python3 source/tools/run_collect.py)",
+      "Bash(python3 tools/encode_mms.py *)",
+      "Bash(python3 tools/pack_mms.py *)",
+      "Bash(python3 tools/unpack_banks.py)",
+      "Bash(node --check *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(ffprobe *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(rm -rf source/audio_build *)",
+      "Bash(rm -rf source/voice *)",
+      "Bash(rm -rf audio *)",
+      "Edit(/index.html)",
+      "Edit(/sw.js)",
+      "Edit(/manifest.webmanifest)",
+      "Edit(/audio/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/nach_aenderung.py",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/sitzungsstart.py",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

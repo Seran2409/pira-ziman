@@ -39,8 +39,20 @@ Der Lernstand wird im Browser auf dem jeweiligen Gerät gespeichert. Unter **Pro
 | `audio/m0.js` … | Aussprache-Aufnahmen, werden bei Bedarf nachgeladen |
 | `sw.js`, `manifest.webmanifest`, `icon*.png`, `icon.svg` | Offline-Nutzung und App-Symbol |
 | `.nojekyll` | sorgt dafür, dass GitHub Pages die Dateien unverändert ausliefert |
-| `source/` | Quelltext, Build- und Audio-Werkzeuge, Tests (siehe `CLAUDE.md`) |
+| `source/` | Quelltext, Build- und Audio-Werkzeuge, Tests |
+| `CLAUDE.md`, `.claude/`, `docs/` | Anleitung, Regeln, Befehle und Prüfungen für die Weiterentwicklung mit Claude Code, Roadmap |
+
+## Weiterentwickeln mit Claude Code
+
+```bash
+git clone https://github.com/Seran2409/pira-ziman.git
+cd pira-ziman
+python3 -m pip install -r source/requirements.txt && python3 -m playwright install chromium
+claude
+```
+
+Claude Code liest dann `CLAUDE.md` und die Regeln in `.claude/rules/`. Nützliche Befehle: `/bauen`, `/neue-lektion B1 Beim Arzt`, `/audio-erneuern`, `/veroeffentlichen`.
 
 ## Ausblick
 
-Die Web-App ist ein erster Entwurf. Geplant sind eine **deutsche und eine englische Version** (Oberfläche und Erklärungen jeweils komplett in einer der beiden Sprachen) sowie eine richtige **App für Android und iOS**. Details stehen in `CLAUDE.md`.
+Die Web-App ist ein erster Entwurf. Geplant sind eine **deutsche und eine englische Version** (Oberfläche und Erklärungen jeweils komplett in einer der beiden Sprachen) sowie eine richtige **App für Android und iOS**. Details stehen in `docs/ROADMAP.md`.

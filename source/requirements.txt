@@ -1,0 +1,7 @@
+# Python-Pakete für Build, Tests und Audio-Pipeline von Pira Ziman
+# Installation: python3 -m pip install -r source/requirements.txt && python3 -m playwright install chromium
+# Außerdem nötig: ffmpeg (mit libmp3lame) und eSpeak NG für Aufnahmen, Node.js optional für die Syntaxprüfung im Hook
+numpy>=1.26
+scipy>=1.11
+Pillow>=10
+playwright>=1.40

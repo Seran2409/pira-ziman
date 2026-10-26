@@ -115,10 +115,15 @@ def main():
     items = json.load(open(items_path, encoding='utf-8'))
     v = Vits(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'voice'))
     todo = [(k, t) for i, (k, t) in enumerate(items) if i % nsh == shard]
+    # texts that already have a finished MP3 (e.g. restored with unpack_banks.py) are skipped unless PIRA_FORCE=1
+    mmsdir = os.environ.get('PIRA_MMS_DIR', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'audio_build', 'mms'))
+    force = os.environ.get('PIRA_FORCE') == '1'
     t0 = time.time(); done = 0
     for k, t in todo:
         out = os.path.join(rawdir, name_for(t) + '.wav')
         if os.path.exists(out) and os.path.getsize(out) > 0:
+            continue
+        if not force and os.path.exists(os.path.join(mmsdir, name_for(t) + '.mp3')):
             continue
         y = render(v, t, word=(' ' not in k))
         if y is None:
