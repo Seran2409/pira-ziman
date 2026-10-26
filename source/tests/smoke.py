@@ -8,8 +8,11 @@ async def main():
         pg = await b.new_page(viewport={'width': 1280, 'height': 900})
         errs = []
         pg.on('pageerror', lambda e: errs.append('PAGEERROR ' + str(e)))
-        pg.on('console', lambda m: errs.append('CONSOLE ' + m.type + ' ' + m.text) if m.type in ('error', 'warning') else None)
+        audio = __import__('os').environ.get('PIRA_SMOKE_AUDIO') == '1'   # default: audio banks blocked, the run stays fast
+        pg.on('console', lambda m: errs.append('CONSOLE ' + m.type + ' ' + m.text) if m.type in ('error', 'warning') and (audio or 'Failed to load resource' not in m.text) else None)
         await pg.route('**/fonts.googleapis.com/**', lambda r: r.abort())
+        if not audio:
+            await pg.route('**/audio/**', lambda r: r.abort())
         await pg.goto('file://' + PATH)
         await pg.wait_for_timeout(400)
         for h in ['home', 'path', 'review', 'read', 'verbs', 'dict', 'grammar', 'method', 'profile', 'more']:

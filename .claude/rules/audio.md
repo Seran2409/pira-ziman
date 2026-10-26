@@ -21,12 +21,13 @@ Jeder kurdische Text in der App hat eine Aufnahme. Der Schlüssel hängt nur vom
    wait
    ```
    Einstellungen: `noise_scale` 0.42, `noise_scale_w` 0.5 (ruhig und deutlich), Tempo 0.92 für Sätze und 0.85 für Wörter. Einzelne Wörter: drei Varianten, genommen wird die typischste (`medoid()` mit MFCC + DTW). Zum Ausprobieren `PIRA_NS`, `PIRA_NSW`, `PIRA_TAKES_WORD`.
-4. `tools/encode_mms.py audio_build/items.json`: **Klanggestaltung** von `raw/` nach `mms/`, parallel, einige Minuten. Hier am Klang feilen, ohne neu zu erzeugen:
+4. `tools/encode_mms.py audio_build/items.json`: **Klanggestaltung** von `raw/` nach `mms/`, parallel, etwa 15 Minuten für alle Texte. Hier am Klang feilen, ohne neu zu erzeugen:
    - Stimme `PIRA_VOICE`: `freundlich` (Standard, von Seran ausgewählt: etwa 2 Halbtöne höher, Satzmelodie 20 % lebendiger, leichtes „Lächeln“), `sauber` (Originalstimme), `hell` (experimentell, frauenähnlich, künstlicher)
    - Tonhöhe und Melodie per TD-PSOLA (`voice_fx.py`), „Lächeln“ per `asetrate` + `atempo` (Formanten und Tonhöhe +6 %). Kein `rubberband`: Der Phase-Vocoder verschmiert die Obertöne hörbar
    - Säubern: Hochpass, Rauschminderung, weniger kastig (−2,5 dB bei 350 Hz), etwas Wärme, Präsenz bei 2,6 kHz, weichere Höhen, De-Esser, sanfter Kompressor, Limiter, kurze Blenden. Ziel etwa −16 LUFS, Spitzen unter −1 dB
    - MP3 24 kHz, 64 kbit/s, Tiefpass 8 kHz (die Stimme selbst reicht nur bis 8 kHz)
    - **Falle in ffmpeg 6.1:** `aresample=…:resampler=soxr` **nach** `atempo` hängt sich auf. Der Resampler steht immer davor
+   - **Falle in `voice_fx.py`:** Pitch-Marken müssen streng steigen. Springt eine Marke beim Einrasten auf den Spitzenwert zurück, läuft PSOLA endlos. `pitch_marks()` hält deshalb mindestens eine halbe Periode Abstand, und `encode_mms.py` bricht ffmpeg nach 120 s ab
 5. `tools/pack_mms.py audio_build/items.json`: packt die MP3s in Banken von etwa 400 KB (`dist/audio/m{n}.js`, Anzahl `nb` automatisch, Zuordnung FNV-Hash % nb) und schreibt `audio_build/index.json` und die Lautschrift `audio_build/ipa.json`. Braucht `espeak-ng` (Pfad über `ESPEAK_NG`, Daten über `ESPEAK_DATA_PATH`).
 6. `build.py` (bettet `index.json` und `ipa.json` ein), dann `tools/build_pages.py` (kopiert `dist/audio` nach `../audio`).
 

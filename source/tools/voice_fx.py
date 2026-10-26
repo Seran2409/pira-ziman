@@ -72,6 +72,10 @@ def pitch_marks(y, f0, sr=SR):
             a, b = int(max(0, t - T / 3)), int(min(n, t + T / 3 + 1))
             if b > a:
                 t = a + int(np.argmax(np.abs(y[a:b])))
+            if marks and t < marks[-1] + T / 2:   # snapping must never step back: marks stay at least half a period apart
+                t = int(round(marks[-1] + T / 2))
+            if t >= n:
+                break
             marks.append(t); periods.append(T)
             t = int(round(t + T))
         else:
@@ -116,7 +120,7 @@ def psola(y, f0, shift=1.0, expand=1.0, sr=SR):
             out[s:s + len(g)] += g * w
             wsum[s:s + len(g)] += w
         step = (ma[i + 1] - ma[i]) if i + 1 < K else P[i]   # forward spacing: identity when ratio == 1
-        t += step / ratio[i]
+        t += max(step, 1) / ratio[i]                          # always move forward
     wsum[wsum < 1e-3] = 1.0
     return (out / wsum)[:n].astype(np.float32)
 

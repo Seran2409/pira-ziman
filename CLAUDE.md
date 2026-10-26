@@ -50,7 +50,7 @@ python3 tools/build_pages.py                  # Website in die Repo-Wurzel schre
 
 Einrichtung: `python3 -m pip install -r source/requirements.txt && python3 -m playwright install chromium`. Für Aufnahmen zusätzlich ffmpeg, eSpeak NG und das Stimmmodell (siehe `.claude/rules/audio.md`). `build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner nach einem frischen Klon und haben sich die Aufnahmen nicht geändert: `cp -r ../audio dist/audio`.
 
-**Vor jedem Push** die Service-Worker-Version `VERSION` in `source/tools/build_pages.py` erhöhen (zurzeit `pira-v6`), sonst liefern installierte Apps die alte Fassung aus dem Cache.
+**Vor jedem Push** die Service-Worker-Version `VERSION` in `source/tools/build_pages.py` erhöhen (zurzeit `pira-v7`), sonst liefern installierte Apps die alte Fassung aus dem Cache.
 
 ## Skills und Agenten
 

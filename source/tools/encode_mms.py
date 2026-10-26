@@ -68,7 +68,7 @@ def encode_one(args):
             w.writeframes((np.clip(y, -1, 1) * 32767).astype('<i2').tobytes())
         subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', tmp, '-af', chain(),
                         '-ac', '1', '-ar', '24000', '-c:a', 'libmp3lame', '-b:a', '64k', '-cutoff', '8000',
-                        out + '.tmp.mp3'], check=True)
+                        out + '.tmp.mp3'], check=True, timeout=120)
         os.replace(out + '.tmp.mp3', out)
     finally:
         os.remove(tmp)
