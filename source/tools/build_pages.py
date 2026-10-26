@@ -7,7 +7,7 @@ src = open(ROOT + '/dist/pira-ziman.html', encoding='utf-8').read()
 cut = src.index('<div class="app">')
 head, body = src[:cut], src[cut:]
 head = head.replace('<title>Pira Ziman</title>', '')
-VERSION = 'pira-v5'
+VERSION = 'pira-v6'
 page = f'''<!doctype html>
 <html lang="de">
 <head>

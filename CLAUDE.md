@@ -19,7 +19,7 @@ Neue Arbeit soll diese Ziele erleichtern und nicht verbauen. Der Abschnitt [Road
 ```
 /                       ← von GitHub Pages ausgeliefert (generiert, nicht von Hand ändern)
   index.html            die komplette App in einer Datei
-  audio/m0.js … m74.js  Aussprache-Aufnahmen (MP3 als Base64), werden bei Bedarf nachgeladen
+  audio/m0.js …         Aussprache-Aufnahmen (MP3 als Base64), werden bei Bedarf nachgeladen
   sw.js                 Service Worker (Offline; VERSION bei jeder Auslieferung erhöhen)
   manifest.webmanifest, icon.svg, icon-192.png, icon-512.png, .nojekyll
   README.md             wird aus source/tools/README_site.md kopiert
@@ -81,7 +81,7 @@ python3 tests/smoke.py dist/pira-ziman.html   # alle 54 Lektionen + Niveautests,
 python3 tools/build_pages.py          # schreibt die Website in die Repo-Wurzel (index.html, audio/, sw.js, Icons, README.md)
 ```
 
-`build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner (frischer Klon), entweder die Audio-Pipeline laufen lassen oder `cp -r ../audio dist/audio`. Vor jedem Push: `VERSION` in `build_pages.py` erhöhen (zurzeit `pira-v5`), sonst liefern installierte Apps die alte Version aus dem Cache.
+`build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner (frischer Klon), entweder die Audio-Pipeline laufen lassen oder `cp -r ../audio dist/audio`. Vor jedem Push: `VERSION` in `build_pages.py` erhöhen (zurzeit `pira-v6`), sonst liefern installierte Apps die alte Version aus dem Cache.
 
 ### Audio-Pipeline
 
@@ -89,11 +89,16 @@ Jeder kurdische Text in der App hat eine Aufnahme. Der Schlüssel hängt nur vom
 
 1. `tools/unpack_banks.py`: holt die Einzel-MP3s aus `audio/m*.js` zurück nach `audio_build/mms/` (nach einem frischen Klon).
 2. `tools/run_collect.py` (nutzt `collect.js`, Playwright): sammelt alle Sprechtexte aus der gebauten App → `audio_build/items.json`.
-3. `tools/gen_mms.py`: erzeugt fehlende Aufnahmen mit der neuronalen Stimme **MMS-TTS** (`facebook/mms-tts-kmr-script_latin`, Modell in `source/voice/`, gitignored), reines NumPy (`vits_np.py`), etwa 1,8 s pro Satz.
-4. `tools/pack_mms.py audio_build/items.json`: packt die MP3s in 75 Banken `dist/audio/m{n}.js` (FNV-Hash % 75), schreibt `index.json` und die Lautschrift `ipa.json` (braucht `espeak-ng`; Pfad über `ESPEAK_NG`, Daten über `ESPEAK_DATA_PATH`).
+3. `tools/gen_mms.py ITEMS OUTDIR SHARD NSHARDS`: erzeugt fehlende Aufnahmen mit der neuronalen Stimme **MMS-TTS** (`facebook/mms-tts-kmr-script_latin`, Modell in `source/voice/`, gitignored), reines NumPy (`vits_np.py`). Zwei Shards parallel brauchen für alle rund 4.570 Texte etwa 1,5 Stunden. Einstellungen (Version 2, für Klarheit):
+   - ruhigeres Sampling: `noise_scale` 0.42, `noise_scale_w` 0.5, Tempo 0.92 (Sätze) bzw. 0.85 (Wörter)
+   - einzelne Wörter: drei Varianten, genommen wird die typischste (MFCC + DTW, `medoid()`), damit keine Ausreißer durchrutschen
+   - Nachbearbeitung mit ffmpeg (`CHAIN`): Rauschminderung, weniger Dröhnen, mehr Präsenz bei 3 kHz und Höhen für s, ş, ç, De-Esser, Kompressor, Limiter. Ergebnis etwa −16 LUFS, Spitzen unter −1 dB
+   - MP3 mit 24 kHz und 48 kbit/s, Tiefpass bei 8 kHz (die Stimme selbst reicht nur bis 8 kHz). Version 1 war 16 kHz / 24 kbit/s und bei etwa 5,5 kHz abgeschnitten
+   - Einstellungen lassen sich zum Ausprobieren über `PIRA_NS`, `PIRA_NSW`, `PIRA_TAKES_WORD` und `PIRA_CHAIN` ändern
+4. `tools/pack_mms.py audio_build/items.json`: packt die MP3s in Banken von etwa 400 KB `dist/audio/m{n}.js` (Anzahl `nb` automatisch, Zuordnung FNV-Hash % nb), schreibt `index.json` und die Lautschrift `ipa.json` (braucht `espeak-ng`; Pfad über `ESPEAK_NG`, Daten über `ESPEAK_DATA_PATH`).
 5. `build.py`, dann `build_pages.py`.
 
-Bewertung im Aussprache-Trainer: MFCC + DTW, `score = 100 * clamp((2.62 - d) / 0.91)`. Kalibriert: derselbe Satz von einer anderen Stimme ≈ 78, ein anderer Satz ≈ 25. Für einzelne Wörter ist das Maß unzuverlässig, deshalb übt der Trainer Sätze. `tools/mfcc_dtw.py` ist die Python-Referenz.
+Bewertung im Aussprache-Trainer: MFCC + DTW, `score = 100 * clamp((2.62 - d) / 0.91)`. Kalibriert: derselbe Satz von einer anderen Stimme ≈ 78, ein anderer Satz ≈ 25. Mit den Aufnahmen der Version 2 geprüft: gleicher Satz alt gegen neu = 100, verschiedene Sätze 22 bis 42. Die MFCCs werden pro Aufnahme normalisiert, deshalb ändert die Klangbearbeitung die Bewertung nicht. Für einzelne Wörter ist das Maß unzuverlässig, deshalb übt der Trainer Sätze. `tools/mfcc_dtw.py` ist die Python-Referenz.
 
 ## Gamifizierung (`47-game.js`)
 
@@ -160,7 +165,7 @@ Heute sind deutsche Texte direkt in den Template-Strings (`*.js`) und in den Dat
 
 ### 2. Native App für Android und iOS
 
-Anforderungen: Offline-Nutzung inklusive aller rund 4.600 Aufnahmen (etwa 30 MB), Mikrofon und Aufnahme für den Trainer, dauerhafter lokaler Speicher, Erinnerungen an die Serie (Push), optional Sync zwischen Geräten, Datenschutzerklärung (Mikrofon), Konten bei Google Play und im Apple App Store.
+Anforderungen: Offline-Nutzung inklusive aller rund 4.600 Aufnahmen (etwa 60 MB als Banken, als MP3-Dateien etwa 45 MB), Mikrofon und Aufnahme für den Trainer, dauerhafter lokaler Speicher, Erinnerungen an die Serie (Push), optional Sync zwischen Geräten, Datenschutzerklärung (Mikrofon), Konten bei Google Play und im Apple App Store.
 
 | Weg | Vorteil | Nachteil |
 |---|---|---|
