@@ -143,7 +143,7 @@ function levelBarHTML(compact) {
 }
 function playerCardHTML() {
   const L = levelInfo(), g = G();
-  return `<section class="card pcard">
+  return `<section class="card widget w-red pcard">
     <div class="lvl-badge">${sunSVG('fx-sun-static', 21)}<b>${L.n}</b></div>
     <div class="stack" style="gap:8px;min-width:0">
       <div class="row" style="justify-content:space-between;gap:8px"><div><div class="eyebrow">Ast · Stufe</div><h3>${esc(L.rank[1])} <span class="muted" style="font-weight:500">· ${esc(L.rank[2])}</span></h3></div>
@@ -154,7 +154,7 @@ function playerCardHTML() {
 }
 function questsHTML() {
   const qs = questList(), d = ensureDay(), all = qs.every(q => q.done);
-  return `<section class="card stack"><div class="row" style="flex-wrap:wrap;gap:4px 12px"><div class="grow" style="min-width:min(100%,240px)"><div class="eyebrow">Erkên rojê · Tagesaufgaben</div><h2>${all ? 'Alles geschafft für heute!' : 'Drei Aufgaben für heute'}</h2></div><span class="muted" style="font-size:.85rem">Neue Aufgaben ab Mitternacht</span></div>
+  return `<section class="card widget w-sun stack"><div class="row" style="flex-wrap:wrap;gap:4px 12px"><div class="grow" style="min-width:min(100%,240px)"><div class="eyebrow">Erkên rojê · Tagesaufgaben</div><h2>${all ? 'Alles geschafft für heute!' : 'Drei Aufgaben für heute'}</h2></div><span class="muted" style="font-size:.85rem">Neue Aufgaben ab Mitternacht</span></div>
     <div class="quests">${qs.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="qi">${q.done ? GI.check : GI[q.ic]}</span>
       <div style="min-width:0"><div class="qt">${esc(q.t)}</div><div class="qbar"><i style="width:${Math.round(q.v / q.n * 100)}%"></i></div></div>
       <span class="qr">${q.done ? 'erledigt' : `${q.v}/${q.n} · +5 Zêr`}</span></div>`).join('')}</div>
@@ -191,7 +191,7 @@ function celebrate(title, sub, reward, lvl) {
 /* ---------- shop (in Profîl) ---------- */
 function shopHTML() {
   const g = G(), can = g.zer >= SHIELD_PRICE && g.shields < SHIELD_MAX;
-  return `<section class="card stack"><div class="row"><h2 class="grow">Dikan · Laden</h2><span class="coin">${GI.coin}${g.zer} Zêr</span></div>
+  return `<section class="card widget w-sun stack"><div class="row"><h2 class="grow">Dikan · Laden</h2><span class="coin">${GI.coin}${g.zer} Zêr</span></div>
     <div class="shop-item"><span style="width:40px;height:40px">${GI.shield}</span><div><b>Mertal · Serienschutz</b><br><span class="muted" style="font-size:.9rem">Schützt deine Serie, wenn du einen Tag nicht lernst. Wird automatisch eingesetzt. Du kannst bis zu ${SHIELD_MAX} besitzen (aktuell ${g.shields}).</span></div>
       <button class="btn ${can ? 'primary' : ''}" id="buyShield" ${can ? '' : 'disabled'}>${SHIELD_PRICE} Zêr</button></div>
     <p class="muted" style="font-size:.88rem">Zêr verdienst du mit Tagesaufgaben (+5), der täglichen Schatzkiste (+15) und jedem Stufenaufstieg (+10).</p></section>`;

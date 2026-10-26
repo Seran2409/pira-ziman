@@ -23,6 +23,12 @@
   --roj:#F5B300; --roj-soft:#FFF1C7; --roj-ink:#8A6100;
   --ok:#1A7A3A; --ok-soft:#DCF0E2; --bad:#C2410C; --bad-soft:#FBE3D6;
   --shadow:0 1px 2px rgba(20,26,22,.06),0 8px 24px rgba(20,26,22,.06);
+  --shade:radial-gradient(75% 55% at 100% 0%,rgba(254,189,17,.26),transparent 70%),radial-gradient(65% 50% at 0% 8%,rgba(237,32,36,.13),transparent 70%),radial-gradient(85% 60% at 45% 100%,rgba(39,142,67,.17),transparent 72%);
+  --glass:color-mix(in srgb,var(--surface) 74%,transparent); --glass-line:color-mix(in srgb,var(--line) 75%,transparent);
+  --w-red:linear-gradient(140deg,#FFD3CF 0%,#FFF0EE 72%); --w-red-line:#F4B4AE;
+  --w-sun:linear-gradient(140deg,#FFE29A 0%,#FFF7DD 72%); --w-sun-line:#EFD07A;
+  --w-green:linear-gradient(140deg,#BDEBCB 0%,#ECF9F0 72%); --w-green-line:#A6DBB7;
+  --w-shadow:0 1px 2px rgba(20,26,22,.05),0 10px 28px -8px rgba(20,26,22,.14);
   --font-display:"Bricolage Grotesque",ui-sans-serif,system-ui,"Segoe UI",sans-serif;
   --font-body:"Figtree",ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -34,18 +40,31 @@
   --dicle:#4CC47A; --dicle-soft:#14301F;
   --roj:#FFC83D; --roj-soft:#3A2F10; --roj-ink:#FFC83D;
   --ok:#4CC47A; --ok-soft:#14301F; --bad:#F27A45; --bad-soft:#3B2216;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --shade:radial-gradient(75% 55% at 100% 0%,rgba(254,189,17,.13),transparent 70%),radial-gradient(65% 50% at 0% 8%,rgba(237,32,36,.12),transparent 70%),radial-gradient(85% 60% at 45% 100%,rgba(39,142,67,.16),transparent 72%);
+  --glass:color-mix(in srgb,var(--surface) 70%,transparent); --glass-line:color-mix(in srgb,var(--line) 80%,transparent);
+  --w-red:linear-gradient(140deg,#4E1A1F 0%,#221618 72%); --w-red-line:#6B2A30;
+  --w-sun:linear-gradient(140deg,#4A390B 0%,#252013 72%); --w-sun-line:#6A5414;
+  --w-green:linear-gradient(140deg,#11432A 0%,#15231B 72%); --w-green-line:#1F5C38;
+  --w-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.45); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1210; --surface:#161C18; --sunk:#1F2722; --ink:#E8EEEA; --muted:#9AA7A0; --line:#2C3830;
   --hinar:#FF6B6F; --hinar-soft:#3D1A1C; --on-hinar:#2A0708;
   --dicle:#4CC47A; --dicle-soft:#14301F;
   --roj:#FFC83D; --roj-soft:#3A2F10; --roj-ink:#FFC83D;
   --ok:#4CC47A; --ok-soft:#14301F; --bad:#F27A45; --bad-soft:#3B2216;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --shade:radial-gradient(75% 55% at 100% 0%,rgba(254,189,17,.13),transparent 70%),radial-gradient(65% 50% at 0% 8%,rgba(237,32,36,.12),transparent 70%),radial-gradient(85% 60% at 45% 100%,rgba(39,142,67,.16),transparent 72%);
+  --glass:color-mix(in srgb,var(--surface) 70%,transparent); --glass-line:color-mix(in srgb,var(--line) 80%,transparent);
+  --w-red:linear-gradient(140deg,#4E1A1F 0%,#221618 72%); --w-red-line:#6B2A30;
+  --w-sun:linear-gradient(140deg,#4A390B 0%,#252013 72%); --w-sun-line:#6A5414;
+  --w-green:linear-gradient(140deg,#11432A 0%,#15231B 72%); --w-green-line:#1F5C38;
+  --w-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.45); color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--font-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--shade)}
 h1,h2,h3,h4{font-family:var(--font-display);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
 h1{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800}
 h2{font-size:1.45rem;font-weight:750}
@@ -65,6 +84,7 @@ button{font:inherit;color:inherit}
 /* Shell */
 .app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100%}
 .side{position:sticky;top:0;height:100vh;padding:22px 14px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:18px;background:var(--surface)}
+.side{background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-right-color:var(--glass-line)}
 .brand{display:flex;align-items:center;gap:10px;padding:0 8px}
 .brand b{font:800 1.25rem/1 var(--font-display);letter-spacing:-.02em}
 .brand small{display:block;font-size:.72rem;color:var(--muted);margin-top:3px}
@@ -86,14 +106,15 @@ button{font:inherit;color:inherit}
   .app{grid-template-columns:1fr}
   .side{display:none}
   .main{padding-block:18px 110px}
-  .bottom{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
-  .bottom a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font-size:.7rem;text-decoration:none;color:var(--muted);border-radius:10px}
-  .bottom a[aria-current="page"]{color:var(--hinar);background:var(--hinar-soft);font-weight:650}
+  .bottom{display:flex;position:fixed;left:max(12px,calc(50% - 300px));right:max(12px,calc(50% - 300px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:30;padding:6px;border-radius:28px;background:var(--surface);background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(1.7);backdrop-filter:blur(20px) saturate(1.7);border:1px solid var(--glass-line);box-shadow:0 10px 32px -6px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.25)}
+  .bottom a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;font-size:.7rem;text-decoration:none;color:var(--muted);border-radius:22px;transition:background .2s,color .2s}
+  .bottom a[aria-current="page"]{color:var(--hinar);background:color-mix(in srgb,var(--hinar-soft) 85%,transparent);font-weight:650}
   .bottom svg{width:22px;height:22px}
 }
 
 /* Surfaces */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.card{background:color-mix(in srgb,var(--surface) 88%,transparent);border-color:var(--glass-line);box-shadow:var(--w-shadow);border-radius:18px}
 .panel{background:var(--sunk);border-radius:var(--r);padding:18px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px}
@@ -160,7 +181,7 @@ button{font:inherit;color:inherit}
 .stars{color:var(--roj-ink);font-size:.85rem;letter-spacing:1px;white-space:nowrap}
 
 /* Lesson player overlay */
-.player{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.player{position:fixed;inset:0;z-index:50;background:var(--shade),var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .player-top{display:flex;align-items:center;gap:14px;padding:12px clamp(16px,4vw,32px);max-width:860px;width:100%;margin:0 auto}
 .bar{flex:1;height:12px;border-radius:99px;background:var(--sunk);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--hinar);border-radius:99px;transition:width .35s ease}
@@ -315,6 +336,23 @@ textarea.inp{font:500 .8rem/1.4 var(--font-mono);min-height:120px}
 .chest{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px dashed var(--roj);color:var(--roj-ink);font-weight:650}
 .chest svg{width:22px;height:22px;flex:none}
 .chest.open{border-style:solid;background:var(--roj-soft)}
+@supports not (color:color-mix(in srgb,red 50%,blue)){:root{--glass:var(--surface);--glass-line:var(--line)}}
+/* Widgets: juicy flag tints. Inner chips sit on glass. */
+.widget.w-red{background:var(--w-red);border-color:var(--w-red-line)}
+.widget.w-sun{background:var(--w-sun);border-color:var(--w-sun-line)}
+.widget.w-green{background:var(--w-green);border-color:var(--w-green-line)}
+.widget .coin,.widget .quest,.widget .xpbar,.widget .chest,.widget .say,.widget .btn:not(.primary){background:var(--glass)}
+.widget .quest{border:1px solid var(--glass-line)}
+.widget .quest .qbar{background:color-mix(in srgb,var(--dicle) 14%,transparent)}
+.widget .quest .qbar i{background:linear-gradient(90deg,var(--dicle),color-mix(in srgb,var(--dicle) 60%,var(--roj)))}
+.widget .chest.open{background:color-mix(in srgb,var(--roj) 30%,transparent)}
+.widget .sun-goal .ray{fill:color-mix(in srgb,var(--ink) 14%,transparent)}
+.widget .sun-goal .disc{fill:var(--glass)}
+.tints>.card:nth-child(3n+1){background:var(--w-red);border-color:var(--w-red-line)}
+.tints>.card:nth-child(3n+2){background:var(--w-sun);border-color:var(--w-sun-line)}
+.tints>.card:nth-child(3n){background:var(--w-green);border-color:var(--w-green-line)}
+.badge{background:var(--glass);border-color:var(--glass-line)}
+.badge.got{background:var(--w-sun);border-color:var(--w-sun-line)}
 .shop-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center}
 .fx{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(10,14,12,.55);padding:16px}
 .fx canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -1747,7 +1785,7 @@ VIEWS.home = () => {
         <a class="btn big" href="#pron">Aussprache üben</a>
       </div>
     </div>
-    <div class="card row" style="align-items:center;gap:18px">
+    <div class="card widget w-green row" style="align-items:center;gap:18px">
       <div class="ring" style="--p:${p}"><i>${tx}<small>von ${S.goal} XP</small></i></div>
       <div class="grow stack" style="gap:6px">
         <div class="eyebrow">Tagesziel</div>
@@ -1768,8 +1806,8 @@ VIEWS.home = () => {
     <p class="muted" style="font-size:.88rem">Die Zehn-Bogen-Brücke über den Tigris bei Amed: Jeder Bogen steht für eine halbe Niveaustufe von A1 bis C1. Am anderen Ufer wartet der Turm der Stadtmauer: C2. Ein Teil färbt sich, sobald seine Lektionen geschafft sind.</p>
   </section>
   <div class="grid2">
-    ${wod ? `<div class="card stack" style="gap:6px"><div class="eyebrow">Peyva rojê · Wort des Tages</div><div class="row"><div class="prompt">${esc(wod.ku)}</div>${sayBtn(wod.ku)}</div><p>${esc(wod.de)}</p>${wod.tip ? `<p class="muted" style="font-size:.88rem">${esc(wod.tip)}</p>` : ''}</div>` : ''}
-    ${prov ? `<div class="card stack" style="gap:6px"><div class="eyebrow">Gotina pêşiyan · Sprichwort</div><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><div class="prompt grow" style="font-size:1.25rem">${esc(prov[0])}</div>${sayBtn(prov[0])}</div><p>${esc(prov[1])}</p>${prov[2] ? `<p class="muted" style="font-size:.88rem">${esc(prov[2])}</p>` : ''}</div>` : ''}
+    ${wod ? `<div class="card widget w-red stack" style="gap:6px"><div class="eyebrow">Peyva rojê · Wort des Tages</div><div class="row"><div class="prompt">${esc(wod.ku)}</div>${sayBtn(wod.ku)}</div><p>${esc(wod.de)}</p>${wod.tip ? `<p class="muted" style="font-size:.88rem">${esc(wod.tip)}</p>` : ''}</div>` : ''}
+    ${prov ? `<div class="card widget w-sun stack" style="gap:6px"><div class="eyebrow">Gotina pêşiyan · Sprichwort</div><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><div class="prompt grow" style="font-size:1.25rem">${esc(prov[0])}</div>${sayBtn(prov[0])}</div><p>${esc(prov[1])}</p>${prov[2] ? `<p class="muted" style="font-size:.88rem">${esc(prov[2])}</p>` : ''}</div>` : ''}
   </div>`;
 };
 document.addEventListener('click', e => { const b = e.target.closest('[data-start]'); if (b) { const l = lessonById(b.dataset.start); if (l) startLesson(l); } });
@@ -1801,7 +1839,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-test
 
 /* ---------- more (mobile) ---------- */
 VIEWS.more = () => `<div class="page-head"><div class="eyebrow">Zêde · Mehr</div><h1>Werkzeuge</h1></div>
-  <div class="grid2">${PAGES.slice(4).map(([id, ku, de]) => `<a class="card row" href="#${id}" style="text-decoration:none;color:inherit"><span style="width:28px;color:var(--hinar)">${icon(id)}</span><span class="grow"><b>${ku}</b><br><span class="muted">${de}</span></span></a>`).join('')}</div>`;
+  <div class="grid2 tints">${PAGES.slice(4).map(([id, ku, de]) => `<a class="card row" href="#${id}" style="text-decoration:none;color:inherit"><span style="width:28px;color:var(--hinar)">${icon(id)}</span><span class="grow"><b>${ku}</b><br><span class="muted">${de}</span></span></a>`).join('')}</div>`;
 
 /* ---------- boot ---------- */
 function boot() {
@@ -3144,7 +3182,7 @@ function levelBarHTML(compact) {
 }
 function playerCardHTML() {
   const L = levelInfo(), g = G();
-  return `<section class="card pcard">
+  return `<section class="card widget w-red pcard">
     <div class="lvl-badge">${sunSVG('fx-sun-static', 21)}<b>${L.n}</b></div>
     <div class="stack" style="gap:8px;min-width:0">
       <div class="row" style="justify-content:space-between;gap:8px"><div><div class="eyebrow">Ast · Stufe</div><h3>${esc(L.rank[1])} <span class="muted" style="font-weight:500">· ${esc(L.rank[2])}</span></h3></div>
@@ -3155,7 +3193,7 @@ function playerCardHTML() {
 }
 function questsHTML() {
   const qs = questList(), d = ensureDay(), all = qs.every(q => q.done);
-  return `<section class="card stack"><div class="row" style="flex-wrap:wrap;gap:4px 12px"><div class="grow" style="min-width:min(100%,240px)"><div class="eyebrow">Erkên rojê · Tagesaufgaben</div><h2>${all ? 'Alles geschafft für heute!' : 'Drei Aufgaben für heute'}</h2></div><span class="muted" style="font-size:.85rem">Neue Aufgaben ab Mitternacht</span></div>
+  return `<section class="card widget w-sun stack"><div class="row" style="flex-wrap:wrap;gap:4px 12px"><div class="grow" style="min-width:min(100%,240px)"><div class="eyebrow">Erkên rojê · Tagesaufgaben</div><h2>${all ? 'Alles geschafft für heute!' : 'Drei Aufgaben für heute'}</h2></div><span class="muted" style="font-size:.85rem">Neue Aufgaben ab Mitternacht</span></div>
     <div class="quests">${qs.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="qi">${q.done ? GI.check : GI[q.ic]}</span>
       <div style="min-width:0"><div class="qt">${esc(q.t)}</div><div class="qbar"><i style="width:${Math.round(q.v / q.n * 100)}%"></i></div></div>
       <span class="qr">${q.done ? 'erledigt' : `${q.v}/${q.n} · +5 Zêr`}</span></div>`).join('')}</div>
@@ -3192,7 +3230,7 @@ function celebrate(title, sub, reward, lvl) {
 /* ---------- shop (in Profîl) ---------- */
 function shopHTML() {
   const g = G(), can = g.zer >= SHIELD_PRICE && g.shields < SHIELD_MAX;
-  return `<section class="card stack"><div class="row"><h2 class="grow">Dikan · Laden</h2><span class="coin">${GI.coin}${g.zer} Zêr</span></div>
+  return `<section class="card widget w-sun stack"><div class="row"><h2 class="grow">Dikan · Laden</h2><span class="coin">${GI.coin}${g.zer} Zêr</span></div>
     <div class="shop-item"><span style="width:40px;height:40px">${GI.shield}</span><div><b>Mertal · Serienschutz</b><br><span class="muted" style="font-size:.9rem">Schützt deine Serie, wenn du einen Tag nicht lernst. Wird automatisch eingesetzt. Du kannst bis zu ${SHIELD_MAX} besitzen (aktuell ${g.shields}).</span></div>
       <button class="btn ${can ? 'primary' : ''}" id="buyShield" ${can ? '' : 'disabled'}>${SHIELD_PRICE} Zêr</button></div>
     <p class="muted" style="font-size:.88rem">Zêr verdienst du mit Tagesaufgaben (+5), der täglichen Schatzkiste (+15) und jedem Stufenaufstieg (+10).</p></section>`;

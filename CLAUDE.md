@@ -81,7 +81,7 @@ python3 tests/smoke.py dist/pira-ziman.html   # alle 54 Lektionen + Niveautests,
 python3 tools/build_pages.py          # schreibt die Website in die Repo-Wurzel (index.html, audio/, sw.js, Icons, README.md)
 ```
 
-`build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner (frischer Klon), entweder die Audio-Pipeline laufen lassen oder `cp -r ../audio dist/audio`. Vor jedem Push: `VERSION` in `build_pages.py` erhöhen (zurzeit `pira-v4`), sonst liefern installierte Apps die alte Version aus dem Cache.
+`build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner (frischer Klon), entweder die Audio-Pipeline laufen lassen oder `cp -r ../audio dist/audio`. Vor jedem Push: `VERSION` in `build_pages.py` erhöhen (zurzeit `pira-v5`), sonst liefern installierte Apps die alte Version aus dem Cache.
 
 ### Audio-Pipeline
 
@@ -124,6 +124,17 @@ Rot, Weiß, Grün und die goldene Sonne mit **21 Strahlen**. Die Tokens stehen i
 | `--dicle` (Grün) | #1A7A3A | #4CC47A | Erfolg, Fortschritt, Tagesaufgaben, Serienschutz |
 | `--roj` (Sonnengold) | #F5B300 | #FFC83D | Sonne, Stufen-Abzeichen, Zêr, Sterne (als Fläche) |
 | `--roj-ink` | #8A6100 | #FFC83D | Gold als **Text** (Gold auf Weiß ist sonst zu kontrastarm) |
+
+Weitere Tokens für Tiefe und Widgets (jeweils mit Dunkel-Variante):
+
+| Token | Verwendung |
+|---|---|
+| `--shade` | weicher Farbverlauf im Hintergrund: Sonnengold oben rechts, Rot oben links, Grün unten. Liegt fest hinter allem (`body::before`) und im Lektions-Overlay |
+| `--glass`, `--glass-line` | halbtransparente Fläche für Leiste unten, Seitenleiste und Chips in Widgets (mit `backdrop-filter: blur`) |
+| `--w-red`, `--w-sun`, `--w-green` (+ `-line`) | kräftigere Verläufe für Widgets: Klasse `card widget w-red` usw. Startseite: Tagesziel grün, Stufe rot, Tagesaufgaben gold, Wort des Tages rot, Sprichwort gold. `.tints` färbt eine Kartenliste reihum |
+| `--w-shadow` | Schatten der Karten |
+
+Die **Leiste unten auf dem Handy** schwebt wie bei Instagram: abgerundete Pille mit Abstand zum Rand, halbtransparent mit Unschärfe (`.bottom`).
 
 Regeln: Farben nur über Tokens, keine Hex-Werte im Code. Jede Farbe braucht einen Wert für den Dunkelmodus. Text in Gold immer mit `--roj-ink`. Die Sonne hat immer 21 Strahlen (`sunSVG()`, `flagMark()`). Die Navigationspunkte tragen kurdische Namen mit deutschem Untertitel.
 

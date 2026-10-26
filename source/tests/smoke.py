@@ -1,6 +1,6 @@
 import sys, asyncio, json
 from playwright.async_api import async_playwright
-PATH = sys.argv[1]
+PATH = __import__("os").path.abspath(sys.argv[1])
 SHOT = sys.argv[2] if len(sys.argv) > 2 else None
 async def main():
     async with async_playwright() as p:

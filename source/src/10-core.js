@@ -263,7 +263,7 @@ VIEWS.home = () => {
         <a class="btn big" href="#pron">Aussprache üben</a>
       </div>
     </div>
-    <div class="card row" style="align-items:center;gap:18px">
+    <div class="card widget w-green row" style="align-items:center;gap:18px">
       <div class="ring" style="--p:${p}"><i>${tx}<small>von ${S.goal} XP</small></i></div>
       <div class="grow stack" style="gap:6px">
         <div class="eyebrow">Tagesziel</div>
@@ -284,8 +284,8 @@ VIEWS.home = () => {
     <p class="muted" style="font-size:.88rem">Die Zehn-Bogen-Brücke über den Tigris bei Amed: Jeder Bogen steht für eine halbe Niveaustufe von A1 bis C1. Am anderen Ufer wartet der Turm der Stadtmauer: C2. Ein Teil färbt sich, sobald seine Lektionen geschafft sind.</p>
   </section>
   <div class="grid2">
-    ${wod ? `<div class="card stack" style="gap:6px"><div class="eyebrow">Peyva rojê · Wort des Tages</div><div class="row"><div class="prompt">${esc(wod.ku)}</div>${sayBtn(wod.ku)}</div><p>${esc(wod.de)}</p>${wod.tip ? `<p class="muted" style="font-size:.88rem">${esc(wod.tip)}</p>` : ''}</div>` : ''}
-    ${prov ? `<div class="card stack" style="gap:6px"><div class="eyebrow">Gotina pêşiyan · Sprichwort</div><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><div class="prompt grow" style="font-size:1.25rem">${esc(prov[0])}</div>${sayBtn(prov[0])}</div><p>${esc(prov[1])}</p>${prov[2] ? `<p class="muted" style="font-size:.88rem">${esc(prov[2])}</p>` : ''}</div>` : ''}
+    ${wod ? `<div class="card widget w-red stack" style="gap:6px"><div class="eyebrow">Peyva rojê · Wort des Tages</div><div class="row"><div class="prompt">${esc(wod.ku)}</div>${sayBtn(wod.ku)}</div><p>${esc(wod.de)}</p>${wod.tip ? `<p class="muted" style="font-size:.88rem">${esc(wod.tip)}</p>` : ''}</div>` : ''}
+    ${prov ? `<div class="card widget w-sun stack" style="gap:6px"><div class="eyebrow">Gotina pêşiyan · Sprichwort</div><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><div class="prompt grow" style="font-size:1.25rem">${esc(prov[0])}</div>${sayBtn(prov[0])}</div><p>${esc(prov[1])}</p>${prov[2] ? `<p class="muted" style="font-size:.88rem">${esc(prov[2])}</p>` : ''}</div>` : ''}
   </div>`;
 };
 document.addEventListener('click', e => { const b = e.target.closest('[data-start]'); if (b) { const l = lessonById(b.dataset.start); if (l) startLesson(l); } });
@@ -317,7 +317,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-test
 
 /* ---------- more (mobile) ---------- */
 VIEWS.more = () => `<div class="page-head"><div class="eyebrow">Zêde · Mehr</div><h1>Werkzeuge</h1></div>
-  <div class="grid2">${PAGES.slice(4).map(([id, ku, de]) => `<a class="card row" href="#${id}" style="text-decoration:none;color:inherit"><span style="width:28px;color:var(--hinar)">${icon(id)}</span><span class="grow"><b>${ku}</b><br><span class="muted">${de}</span></span></a>`).join('')}</div>`;
+  <div class="grid2 tints">${PAGES.slice(4).map(([id, ku, de]) => `<a class="card row" href="#${id}" style="text-decoration:none;color:inherit"><span style="width:28px;color:var(--hinar)">${icon(id)}</span><span class="grow"><b>${ku}</b><br><span class="muted">${de}</span></span></a>`).join('')}</div>`;
 
 /* ---------- boot ---------- */
 function boot() {
