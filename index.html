@@ -29,6 +29,8 @@
   --w-sun:linear-gradient(140deg,#FFE29A 0%,#FFF7DD 72%); --w-sun-line:#EFD07A;
   --w-green:linear-gradient(140deg,#BDEBCB 0%,#ECF9F0 72%); --w-green-line:#A6DBB7;
   --w-shadow:0 1px 2px rgba(20,26,22,.05),0 10px 28px -8px rgba(20,26,22,.14);
+  --btn-red:linear-gradient(135deg,#FF4A4F 0%,#E8141F 55%,#C80F1A 100%); --btn-red-glow:rgba(232,20,31,.55); --on-btn:#FFFFFF;
+  --on-roj:#2A1E00; --on-dicle:#FFFFFF;
   --font-display:"Bricolage Grotesque",ui-sans-serif,system-ui,"Segoe UI",sans-serif;
   --font-body:"Figtree",ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -46,7 +48,9 @@
   --w-red:linear-gradient(140deg,#4E1A1F 0%,#221618 72%); --w-red-line:#6B2A30;
   --w-sun:linear-gradient(140deg,#4A390B 0%,#252013 72%); --w-sun-line:#6A5414;
   --w-green:linear-gradient(140deg,#11432A 0%,#15231B 72%); --w-green-line:#1F5C38;
-  --w-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.45); color-scheme:dark}}
+  --w-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.45);
+  --btn-red:linear-gradient(135deg,#FF4A4F 0%,#E8141F 55%,#C80F1A 100%); --btn-red-glow:rgba(255,60,70,.42); --on-btn:#FFFFFF;
+  --on-roj:#2A1E00; --on-dicle:#06210F; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1210; --surface:#161C18; --sunk:#1F2722; --ink:#E8EEEA; --muted:#9AA7A0; --line:#2C3830;
   --hinar:#FF6B6F; --hinar-soft:#3D1A1C; --on-hinar:#2A0708;
@@ -59,7 +63,9 @@
   --w-red:linear-gradient(140deg,#4E1A1F 0%,#221618 72%); --w-red-line:#6B2A30;
   --w-sun:linear-gradient(140deg,#4A390B 0%,#252013 72%); --w-sun-line:#6A5414;
   --w-green:linear-gradient(140deg,#11432A 0%,#15231B 72%); --w-green-line:#1F5C38;
-  --w-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.45); color-scheme:dark}
+  --w-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.45);
+  --btn-red:linear-gradient(135deg,#FF4A4F 0%,#E8141F 55%,#C80F1A 100%); --btn-red-glow:rgba(255,60,70,.42); --on-btn:#FFFFFF;
+  --on-roj:#2A1E00; --on-dicle:#06210F; color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -129,7 +135,9 @@ button{font:inherit;color:inherit}
 .btn:hover{background:var(--sunk)}
 .btn:active{transform:translateY(1px)}
 .btn.primary{background:var(--hinar);border-color:var(--hinar);color:var(--on-hinar)}
-.btn.primary:hover{filter:brightness(1.07)}
+.btn.primary{background:var(--btn-red);border-color:transparent;color:var(--on-btn);text-shadow:0 1px 1px rgba(0,0,0,.18);box-shadow:0 8px 20px -8px var(--btn-red-glow),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -2px 0 rgba(0,0,0,.12)}
+.btn.primary:hover{filter:brightness(1.07) saturate(1.1)}
+.btn.primary:active{transform:translateY(1px);box-shadow:0 4px 12px -6px var(--btn-red-glow),inset 0 1px 0 rgba(255,255,255,.3)}
 .btn.big{padding:14px 22px;font-size:1.05rem;border-radius:14px}
 .btn.ghost{background:transparent;border-color:transparent}
 .btn.ghost:hover{background:var(--sunk)}
@@ -285,6 +293,7 @@ button{font:inherit;color:inherit}
 .list{display:flex;flex-direction:column}
 .list .it{display:flex;gap:12px;align-items:baseline;padding:10px 4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .list .it .k{font-weight:700;min-width:140px}
+@media (max-width:560px){#dlist .it{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;column-gap:10px;row-gap:2px;align-items:center}#dlist .it>.say{grid-row:1/3;align-self:start}#dlist .it .k{min-width:0;grid-column:2;grid-row:1}#dlist .it .pill{grid-row:1}#dlist .it .btn{grid-row:1}#dlist .it .grow{grid-column:2/-1;grid-row:2}}
 .search{display:flex;gap:10px;flex-wrap:wrap}
 .search .inp{flex:1;min-width:200px;font-size:1rem}
 select.inp{font-size:1rem;width:auto}
@@ -337,6 +346,24 @@ textarea.inp{font:500 .8rem/1.4 var(--font-mono);min-height:120px}
 .chest svg{width:22px;height:22px;flex:none}
 .chest.open{border-style:solid;background:var(--roj-soft)}
 @supports not (color:color-mix(in srgb,red 50%,blue)){:root{--glass:var(--surface);--glass-line:var(--line)}}
+/* Widgets: juicy flag tints. Inside a widget, surfaces turn to glass and sunk areas to a light ink tint. */
+.widget{--surface:var(--glass);--sunk:color-mix(in srgb,var(--ink) 7%,transparent);--line:var(--glass-line)}
+.stat.w-red{background:var(--w-red);border-color:var(--w-red-line)}
+.stat.w-sun{background:var(--w-sun);border-color:var(--w-sun-line)}
+.stat.w-green{background:var(--w-green);border-color:var(--w-green-line)}
+.stat{box-shadow:var(--w-shadow);border-radius:16px}
+/* Levels (Lernpfad, Lesen) cycle red, gold, green: A1 red, A2 gold, B1 green, B2 red, C1 gold, C2 green */
+.level:nth-of-type(3n+1){--lv-bg:var(--w-red);--lv-line:var(--w-red-line);--lv-strong:var(--hinar);--lv-on:var(--on-hinar);--lv-ink:var(--hinar)}
+.level:nth-of-type(3n+2){--lv-bg:var(--w-sun);--lv-line:var(--w-sun-line);--lv-strong:var(--roj);--lv-on:var(--on-roj);--lv-ink:var(--roj-ink)}
+.level:nth-of-type(3n){--lv-bg:var(--w-green);--lv-line:var(--w-green-line);--lv-strong:var(--dicle);--lv-on:var(--on-dicle);--lv-ink:var(--dicle)}
+.level .lv-code{color:var(--lv-ink,var(--hinar))}
+.level .lesson{background:var(--lv-bg,var(--surface));border-color:var(--lv-line,var(--line));box-shadow:var(--w-shadow)}
+.level .lesson .num{background:var(--glass)}
+.level .lesson.done .num{background:var(--lv-strong,var(--hinar));color:var(--lv-on,var(--on-hinar))}
+.level .lesson:hover{border-color:var(--lv-strong,var(--hinar))}
+.level .lesson.next{border-color:var(--lv-strong,var(--hinar));box-shadow:0 0 0 3px color-mix(in srgb,var(--lv-strong,var(--hinar)) 30%,transparent),var(--w-shadow)}
+.level .lesson.locked{background:var(--glass);border-color:var(--glass-line);box-shadow:none}
+.level .lesson .pill.ok{background:var(--glass)}
 /* Widgets: juicy flag tints. Inner chips sit on glass. */
 .widget.w-red{background:var(--w-red);border-color:var(--w-red-line)}
 .widget.w-sun{background:var(--w-sun);border-color:var(--w-sun-line)}
@@ -1760,6 +1787,7 @@ function route() {
   if (typeof stopSay === 'function') stopSay();
   const m = $('#main'); m.innerHTML = `<div class="page">${VIEWS[v]()}</div>`;
   if (VIEWS[v].after) VIEWS[v].after(m);
+  if (typeof afterRoute === 'function') afterRoute(m);
   enhanceSay(m);
   window.scrollTo(0, 0);
 }
@@ -2482,7 +2510,7 @@ VIEWS.read = () => {
   if (RD.id) return readerText();
   return `<div class="page-head"><div class="eyebrow">Xwendin · Lesen</div><h1>Lesetexte</h1>
     <p>Verständlicher Input ist der stärkste Motor beim Sprachenlernen. Lies Texte knapp über deinem Niveau. Tippe auf ein unbekanntes Wort, um die Bedeutung zu sehen, und lege es in deinen Kartenstapel.</p></div>
-  ${LEVELS.map(lv => { const ts = PZ.texts.filter(t => t.lv === lv); if (!ts.length) return ''; return `<section class="stack"><div class="level-head"><span class="lv-code" style="font-size:1.6rem">${lv}</span><h2>${LEVEL_INFO[lv].de}</h2></div>
+  ${LEVELS.map(lv => { const ts = PZ.texts.filter(t => t.lv === lv); if (!ts.length) return ''; return `<section class="stack level"><div class="level-head"><span class="lv-code" style="font-size:1.6rem">${lv}</span><h2>${LEVEL_INFO[lv].de}</h2></div>
     <div class="grid2">${ts.map(t => `<button class="lesson" data-text="${t.id}"><span class="grow"><span class="t">${esc(t.title)}</span><br><span class="s">${esc(t.de)}</span></span>${S.texts[t.id] ? '<span class="pill ok">gelesen</span>' : ''}</button>`).join('')}</div></section>`; }).join('')}`;
 };
 function readerText() {
@@ -3263,6 +3291,25 @@ boot = function () { _boot(); ensureDay(); save(false); renderSideFoot(); };
 
 /* brand mark: flag with sun */
 (function () { const b = document.querySelector('.brand svg'); if (b) b.outerHTML = flagMark(); })();
+
+/* ---------- look: juicy flag tints on every tab ----------
+   After each page renders, top-level cards and stat tiles get the widget tints of the start page
+   in turn (red, gold, green). Cards that already carry a tint keep it and set the rhythm; the
+   bridge stays neutral so its arches read clearly. Levels (Lernpfad, Lesen) are coloured in CSS. */
+const TINTS = ['w-red', 'w-sun', 'w-green'];
+function tintPage(root) {
+  const top = el => !el.parentElement.closest('.card, .widget, .stat');
+  let i = 0;
+  $$('.card', root).filter(top).forEach(c => {
+    const own = TINTS.findIndex(t => c.classList.contains(t));
+    if (own >= 0) { i = own + 1; return; }
+    if (c.classList.contains('bridge-wrap') || c.querySelector('.bridge-wrap')) return;
+    c.classList.add('widget', TINTS[i++ % 3]);
+  });
+  let k = 0;
+  $$('.stat', root).filter(top).forEach(s => { if (!TINTS.some(t => s.classList.contains(t))) s.classList.add(TINTS[k++ % 3]); });
+}
+function afterRoute(m) { tintPage(m); }
 
 buildVForms(); boot();
 </script>

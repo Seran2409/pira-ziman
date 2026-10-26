@@ -9,3 +9,8 @@ source/tools/__pycache__/
 source/voice
 source/audio_build/mms_v1/
 source/audio_build/raw/
+
+# Claude Code: persönliche Einstellungen und Testausgaben
+.claude/settings.local.json
+.claude/agent-memory-local/
+source/tests/out/

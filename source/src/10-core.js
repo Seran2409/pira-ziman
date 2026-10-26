@@ -238,6 +238,7 @@ function route() {
   if (typeof stopSay === 'function') stopSay();
   const m = $('#main'); m.innerHTML = `<div class="page">${VIEWS[v]()}</div>`;
   if (VIEWS[v].after) VIEWS[v].after(m);
+  if (typeof afterRoute === 'function') afterRoute(m);
   enhanceSay(m);
   window.scrollTo(0, 0);
 }

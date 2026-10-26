@@ -106,7 +106,7 @@ VIEWS.read = () => {
   if (RD.id) return readerText();
   return `<div class="page-head"><div class="eyebrow">Xwendin · Lesen</div><h1>Lesetexte</h1>
     <p>Verständlicher Input ist der stärkste Motor beim Sprachenlernen. Lies Texte knapp über deinem Niveau. Tippe auf ein unbekanntes Wort, um die Bedeutung zu sehen, und lege es in deinen Kartenstapel.</p></div>
-  ${LEVELS.map(lv => { const ts = PZ.texts.filter(t => t.lv === lv); if (!ts.length) return ''; return `<section class="stack"><div class="level-head"><span class="lv-code" style="font-size:1.6rem">${lv}</span><h2>${LEVEL_INFO[lv].de}</h2></div>
+  ${LEVELS.map(lv => { const ts = PZ.texts.filter(t => t.lv === lv); if (!ts.length) return ''; return `<section class="stack level"><div class="level-head"><span class="lv-code" style="font-size:1.6rem">${lv}</span><h2>${LEVEL_INFO[lv].de}</h2></div>
     <div class="grid2">${ts.map(t => `<button class="lesson" data-text="${t.id}"><span class="grow"><span class="t">${esc(t.title)}</span><br><span class="s">${esc(t.de)}</span></span>${S.texts[t.id] ? '<span class="pill ok">gelesen</span>' : ''}</button>`).join('')}</div></section>`; }).join('')}`;
 };
 function readerText() {
