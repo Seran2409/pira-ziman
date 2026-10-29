@@ -29,7 +29,7 @@ Der Lernstand wird im Browser auf dem jeweiligen Gerät gespeichert. Unter **Pro
 
 - **Stimme:** Die Aufnahmen sind mit dem Sprachmodell [MMS-TTS](https://huggingface.co/facebook/mms-tts-kmr-script_latin) von Meta (Massively Multilingual Speech) erzeugt. Lizenz: [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/), also nur für nicht-kommerzielle Nutzung. Die Lautschrift im Trainer stammt von [eSpeak NG](https://github.com/espeak-ng/espeak-ng).
 - **Inhalte:** Die Texte und Übungen wurden mit Claude (KI von Anthropic) erstellt und noch nicht von Muttersprachlern geprüft. Hinweise auf Fehler sind willkommen.
-- **Schriften:** Bricolage Grotesque, Figtree und JetBrains Mono über Google Fonts.
+- **Schriften:** die Systemschriften des Geräts. Die App lädt nichts von fremden Servern nach.
 
 ## Aufbau
 

@@ -2,12 +2,13 @@
 import os, shutil, json, stat, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # source/
 SITE = os.environ.get('PIRA_SITE', os.path.dirname(ROOT))  # repo root = GitHub Pages
-GENERATED = ['index.html', 'audio', 'sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', '.nojekyll', 'README.md']
+LEGAL = sorted(os.listdir(ROOT + '/site'))  # impressum, datenschutz, nutzungsbedingungen + their stylesheet
+GENERATED = ['index.html', 'audio', 'sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'icon-1024.png', '.nojekyll', 'README.md'] + LEGAL
 src = open(ROOT + '/dist/pira-ziman.html', encoding='utf-8').read()
 cut = src.index('<div class="app">')
 head, body = src[:cut], src[cut:]
 head = head.replace('<title>Pira Ziman</title>', '')
-VERSION = 'pira-v7'
+VERSION = 'pira-v8'
 page = f'''<!doctype html>
 <html lang="de">
 <head>
@@ -25,7 +26,7 @@ page = f'''<!doctype html>
 <body>
 {body.strip()}
 <script>
-if ('serviceWorker' in navigator && location.protocol === 'https:') {{
+if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.Capacitor) {{  // the native app ships every file, no cache needed
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {{}}));
 }}
 </script>
@@ -46,6 +47,7 @@ open(SITE + '/index.html', 'w', encoding='utf-8').write(page)
 if NEW_AUDIO: shutil.copytree(ROOT + '/dist/audio', SITE + '/audio')
 open(SITE + '/.nojekyll', 'w').write('')
 shutil.copy(ROOT + '/tools/README_site.md', SITE + '/README.md')
+for f in LEGAL: shutil.copy(ROOT + '/site/' + f, SITE + '/' + f)
 
 # App icon: Kurdish flag (red / white / green) with the golden 21-ray sun, on a rounded square.
 import math
@@ -62,7 +64,7 @@ icon_svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><clip
             '<circle cx="256" cy="256" r="76"/></g></g></svg>')
 open(SITE + '/icon.svg', 'w').write(icon_svg)
 from PIL import Image, ImageDraw
-for size in (192, 512):
+for size in (192, 512, 1024):  # 1024: App Store / Play Store icon and source for the native app icons
     S4 = size * 4; s = S4 / 512  # draw 4x, then downsample for smooth edges
     im = Image.new('RGBA', (S4, S4), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     d.rectangle([0, 0, S4, 171 * s], fill='#ED2024'); d.rectangle([0, 170 * s, S4, 342 * s], fill='#FFFFFF'); d.rectangle([0, 341 * s, S4, S4], fill='#278E43')

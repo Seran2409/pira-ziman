@@ -1,0 +1,13 @@
+{
+  "appId": "io.github.seran2409.piraziman",
+  "appName": "Pira Ziman",
+  "webDir": "www",
+  "backgroundColor": "#F7F7F4",
+  "ios": {
+    "contentInset": "never",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

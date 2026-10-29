@@ -1,0 +1,20 @@
+{
+  "name": "pira-ziman-app",
+  "private": true,
+  "description": "Pira Ziman als App für iOS und Android (Capacitor-Hülle um die Web-App)",
+  "scripts": {
+    "prepare-www": "py -X utf8 tools/prepare_www.py || python3 tools/prepare_www.py",
+    "icons": "capacitor-assets generate --ios --android --iconBackgroundColor \"#FFFFFF\" --iconBackgroundColorDark \"#0F1311\" --splashBackgroundColor \"#F7F7F4\" --splashBackgroundColorDark \"#0F1311\"",
+    "sync": "npm run prepare-www && cap sync",
+    "android": "npm run sync && cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/ios": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "3.0.5",
+    "@capacitor/cli": "8.6.0"
+  }
+}

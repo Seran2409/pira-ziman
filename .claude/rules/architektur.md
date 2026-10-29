@@ -50,7 +50,7 @@ addXP = function (n) { ensureDay(); _addXP(n); /* … */ };
 
 ## Regeln für Code
 
-- Vanilla JS, kein Framework, kein Bundler, keine Laufzeit-Abhängigkeiten außer Google Fonts.
+- Vanilla JS, kein Framework, kein Bundler, keine Laufzeit-Abhängigkeiten, keine Anfragen an fremde Server (Systemschriften statt Google Fonts, wichtig für Datenschutz und die native App).
 - Ausgaben, die Nutzertext enthalten, immer mit `esc()` maskieren.
 - Antworten prüfen mit `check(given, targets)`: `ok`, `near` (nur Sonderzeichen fehlen, wird angezeigt) oder `bad`.
 - Neue XP-Quellen über `addXP()`, dann greifen Aufgaben, Stufen und Abzeichen automatisch.

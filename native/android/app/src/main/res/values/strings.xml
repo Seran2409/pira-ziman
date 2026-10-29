@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Pira Ziman</string>
+    <string name="title_activity_main">Pira Ziman</string>
+    <string name="package_name">io.github.seran2409.piraziman</string>
+    <string name="custom_url_scheme">io.github.seran2409.piraziman</string>
+</resources>

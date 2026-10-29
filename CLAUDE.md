@@ -23,7 +23,13 @@ source/
   audio_build/          items.json (alle Sprechtexte), index.json, ipa.json; raw/ und mms/ gitignored
   tests/                smoke.py (alle Lektionen durchspielen), screens.py (Screenshots)
   requirements.txt      Python-Pakete
+  site/                 Impressum, Datenschutz, Nutzungsbedingungen (Vorlagen mit [Platzhaltern]), von build_pages.py mit ausgeliefert
+native/                 iOS- und Android-App (Capacitor 8): www/ wird aus der Website erzeugt (npm run sync), android/ und ios/ sind die nativen Projekte
+codemagic.yaml          Cloud-Builds für iOS (ohne Mac) und Android, ausgelöst durch Tags app-v*
 docs/ROADMAP.md         deutsche/englische Version, native App, Lizenz der Stimme
+docs/STORE.md           Schritt für Schritt in App Store und Google Play, Store-Texte
+docs/GELD_UND_PROMO.md  Spenden statt Werbung (Lizenz der Stimme), Förderungen, Promo-Plan
+docs/rechtliches/       wie Impressum und Co. ausgefüllt werden
 .claude/                Regeln, Skills, Agenten, Hooks und Einstellungen für Claude Code
 ```
 
@@ -50,7 +56,7 @@ python3 tools/build_pages.py                  # Website in die Repo-Wurzel schre
 
 Einrichtung: `python3 -m pip install -r source/requirements.txt && python3 -m playwright install chromium`. Für Aufnahmen zusätzlich ffmpeg, eSpeak NG und das Stimmmodell (siehe `.claude/rules/audio.md`). `build_pages.py` braucht `source/dist/audio/`. Fehlt der Ordner nach einem frischen Klon und haben sich die Aufnahmen nicht geändert: `cp -r ../audio dist/audio`.
 
-**Vor jedem Push** die Service-Worker-Version `VERSION` in `source/tools/build_pages.py` erhöhen (zurzeit `pira-v7`), sonst liefern installierte Apps die alte Fassung aus dem Cache.
+**Vor jedem Push** die Service-Worker-Version `VERSION` in `source/tools/build_pages.py` erhöhen (zurzeit `pira-v8`), sonst liefern installierte Apps die alte Fassung aus dem Cache.
 
 ## Skills und Agenten
 
@@ -75,7 +81,7 @@ Hooks (`.claude/settings.json`): Nach jeder Änderung an `source/src/` baut `.cl
 
 ## Regeln
 
-- Vanilla JS, kein Framework, kein Bundler, keine Laufzeit-Abhängigkeiten außer Google Fonts.
+- Vanilla JS, kein Framework, kein Bundler, keine Laufzeit-Abhängigkeiten, keine Anfragen an fremde Server (Systemschriften statt Google Fonts, wichtig für Datenschutz und die native App).
 - Funktionen werden in späteren Dateien ummantelt, nicht umgeschrieben (`.claude/rules/architektur.md`).
 - Speicherstand-Schlüssel `piraziman.v1` und Lektions-IDs nie ändern. Neue Felder in `fresh()` und `merge()`.
 - Farben nur über Tokens, immer mit Wert für den Dunkelmodus. Die Sonne hat 21 Strahlen.
